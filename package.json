@@ -7,10 +7,12 @@
   "dependencies": {
     "@nrwl/next": "15.9.2",
     "axios": "^1.0.0",
+    "jsdom": "^21.1.1",
     "next": "13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
