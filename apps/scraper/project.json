@@ -1,7 +1,7 @@
 {
-  "name": "daad-scraper",
+  "name": "scraper",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/daad-scraper/src",
+  "sourceRoot": "apps/scraper/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -10,12 +10,12 @@
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
-        "outputPath": "dist/apps/daad-scraper",
+        "outputPath": "dist/apps/scraper",
         "format": ["cjs"],
         "bundle": false,
-        "main": "apps/daad-scraper/src/main.ts",
-        "tsConfig": "apps/daad-scraper/tsconfig.app.json",
-        "assets": ["apps/daad-scraper/src/assets"],
+        "main": "apps/scraper/src/main.ts",
+        "tsConfig": "apps/scraper/tsconfig.app.json",
+        "assets": ["apps/scraper/src/assets"],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,
@@ -40,14 +40,14 @@
       "executor": "@nrwl/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "daad-scraper:build"
+        "buildTarget": "scraper:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "daad-scraper:build:development"
+          "buildTarget": "scraper:build:development"
         },
         "production": {
-          "buildTarget": "daad-scraper:build:production"
+          "buildTarget": "scraper:build:production"
         }
       }
     },
@@ -55,14 +55,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/daad-scraper/**/*.ts"]
+        "lintFilePatterns": ["apps/scraper/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/daad-scraper/jest.config.ts",
+        "jestConfig": "apps/scraper/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
