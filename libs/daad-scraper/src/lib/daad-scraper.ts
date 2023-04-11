@@ -1,6 +1,8 @@
 import { writeFileSync } from 'fs';
 import { JSDOM } from 'jsdom';
-import winston from 'winston';
+import { Logger } from '@funding-database/logger';
+
+const logger = Logger('daad-scraper');
 
 const url = (detailId: number) =>
   `https://www2.daad.de/deutschland/stipendium/datenbank/de/21148-stipendiendatenbank/?status=&origin=&subjectGrps=&daad=&intention=&q=&page=1&detail=${detailId}&back=1`;
@@ -8,28 +10,10 @@ const url = (detailId: number) =>
 const BASE_URL =
   'https://www2.daad.de/deutschland/stipendium/datenbank/de/21148-stipendiendatenbank/?status=&origin=&subjectGrps=&daad=&intention=&q=&page=1&back=1';
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  defaultMeta: { service: 'daad-scraper' },
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
-  ],
-});
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    })
-  );
-}
-
 const downloadAsText = async (url: string) =>
   fetch(url).then((res) => res.text());
 
-const main = async () => {
+export const scrape = async () => {
   logger.info(`starting scraper, trying to find database url from ${BASE_URL}`);
 
   let html = '';
@@ -152,5 +136,3 @@ const getScholarship = async (id: number) => {
     title,
   };
 };
-
-main();
