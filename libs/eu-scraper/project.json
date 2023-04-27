@@ -1,0 +1,16 @@
+{
+  "name": "eu-scraper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/eu-scraper/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/eu-scraper/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}
