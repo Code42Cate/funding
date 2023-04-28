@@ -1,1 +1,5 @@
-export * from './lib/daad-scraper';
+import { scrape } from './lib/daad-scraper';
+
+export default {
+  scrape,
+};

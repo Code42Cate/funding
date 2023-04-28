@@ -1,3 +1,6 @@
+import daad from '@funding-database/daad-scraper';
+import eu from '@funding-database/eu-scraper';
+
 import minimist from 'minimist';
 
 const allScraperNames = ['daad', 'eu-tenders', 'foerderdatenbank'];
@@ -12,9 +15,13 @@ const main = async () => {
   const scraperNames = args.scraper?.split(',') ?? allScraperNames;
 
   // TODO:
-  scraperNames.filter(isValidScraper).forEach((scraperName: string) => {
-    console.log(`Running scraper: ${scraperName}`);
-  });
+  await Promise.allSettled(
+    scraperNames.filter(isValidScraper).map((scraperName: string) => {
+      // if (scraperName === 'daad') return daad.scrape();
+      if (scraperName === 'eu-tenders') return eu.scrape();
+      // if (scraperName === 'foerderdatenbank') return;
+    })
+  );
 
   console.log('Done!');
 };

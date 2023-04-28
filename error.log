@@ -1,0 +1,2 @@
+error: error while downloading https://www2.daad.de/deutschland/stipendium/datenbank/de/21148-stipendiendatenbank/?status=&origin=&subjectGrps=&daad=&intention=&q=&page=1&back=1: TypeError: fetch failed {"service":"daad-scraper"}
+error: error while downloading https://www2.daad.de/deutschland/stipendium/datenbank/de/21148-stipendiendatenbank/?status=&origin=&subjectGrps=&daad=&intention=&q=&page=1&back=1: TypeError: fetch failed {"service":"daad-scraper"}

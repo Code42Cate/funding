@@ -1,1 +1,5 @@
-export * from './lib/eu-scraper';
+import { scrape } from './lib/eu-scraper';
+
+export default {
+  scrape,
+};
