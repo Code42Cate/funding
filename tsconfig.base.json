@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@funding-database/daad-scraper": ["libs/daad-scraper/src/index.ts"],
+      "@funding-database/db": ["libs/db/src/index.ts"],
       "@funding-database/eu-scraper": ["libs/eu-scraper/src/index.ts"],
       "@funding-database/logger": ["libs/logger/src/index.ts"]
     }
