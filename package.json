@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@nrwl/next": "15.9.2",
+    "@prisma/client": "^4.13.0",
     "axios": "^1.0.0",
     "jsdom": "^21.1.1",
     "minimist": "^1.2.8",
