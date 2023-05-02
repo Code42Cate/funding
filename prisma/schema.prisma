@@ -11,12 +11,18 @@ datasource db {
 }
 
 model FundingOpportunity {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  url         String?
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  url         String    @id @default(cuid())
+  title       String
+  targetGroup String?   @map(name: "target_group")
+  duration    String?
+  description String
+  issuer      String
+  type        String
+  meta        Json
+  deadline    DateTime?
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map(name: "updated_at")
+  deletedAt   DateTime? @map(name: "deleted_at")
 
   @@map(name: "funding_opportunities")
 }
