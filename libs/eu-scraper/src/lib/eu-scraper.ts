@@ -1,4 +1,7 @@
-import { writeFileSync } from 'fs';
+import { Logger } from '@funding-database/logger';
+import { fetchTopic } from './topic';
+
+const logger = Logger('eu-scraper');
 
 const FORTHCOMING_STATUS = '31094501';
 const OPEN_STATUS = '31094502';
@@ -34,7 +37,7 @@ export const scrape = async () => {
   const pageSize = 1000;
   let totalResults = pageSize + 1;
 
-  const results: Result[] = [];
+  const results: Root['results'] = [];
 
   while (pageNumber * pageSize < totalResults + pageSize) {
     const res = await fetch(
@@ -51,15 +54,34 @@ export const scrape = async () => {
 
     results.push(...data.results);
 
-    console.log('Fetching page ' + pageNumber + ' of ' + Math.ceil(totalResults / pageSize) + ' pages');
+    logger.info('Fetching page ' + pageNumber + ' of ' + Math.ceil(totalResults / pageSize) + ' pages');
     pageNumber++;
   }
 
-  // dump results to file
+  const urlsToScrape = results.map((result) => result.metadata.identifier?.[0].toLowerCase());
 
-  const json = JSON.stringify(results, null, 2);
-  writeFileSync('eu.json', json, 'utf8');
+  logger.info('Scraping ' + urlsToScrape.length + ' urls');
+
+  const topics = await Promise.allSettled(urlsToScrape.map(fetchTopic));
+
+  // filter successful results
+  const scrapedTopics = topics
+    .filter(assertFulfilled)
+    .map((topic) => topic.value)
+    .filter((topic) => topic);
+
+  // merge results with scraped topics by identifier
+  const resultsWithTopic = results.map((result) => ({
+    ...result,
+    topic: scrapedTopics.find((topic) => topic.identifier === result.metadata.identifier?.[0]),
+  }));
+
+  return resultsWithTopic;
 };
+
+function assertFulfilled<T>(item: PromiseSettledResult<T>): item is PromiseFulfilledResult<T> {
+  return item.status === 'fulfilled';
+}
 
 export interface Root {
   apiVersion: string;
