@@ -5,15 +5,18 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@heroicons/react": "^2.0.17",
     "@nrwl/next": "15.9.2",
     "@prisma/client": "^4.13.0",
     "axios": "^1.0.0",
+    "classnames": "^2.3.2",
     "jsdom": "^21.1.1",
     "minimist": "^1.2.8",
     "next": "13.1.1",
     "prisma": "^4.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hotkeys-hook": "^4.4.0",
     "swr": "^2.1.5",
     "tslib": "^2.3.0",
     "winston": "^3.8.2"
