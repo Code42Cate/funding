@@ -12,8 +12,25 @@ export const fetchTopic = async (identifier: string) => {
 
   const { TopicDetails: topicDetails }: Root = await res.json();
 
+  // console.log(`Title: ${topicDetails.callTitle} (${topicDetails.identifier})`);
+  // console.log(
+  //  `Programme: ${topicDetails.frameworkProgramme.abbreviation} (${topicDetails.frameworkProgramme.description})`
+  // );
+
   return topicDetails;
 };
+
+export interface Root2 {
+  action: string;
+  plannedOpeningDate: string;
+  deadlineModel: string;
+  deadlineDates: string[];
+  budgetYearMap: unknown;
+  expectedGrants: number;
+  minContribution: number;
+  maxContribution: number;
+  budgetTopicActionMap: unknown;
+}
 
 export interface Root {
   TopicDetails: TopicDetails;

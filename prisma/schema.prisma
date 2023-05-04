@@ -14,12 +14,12 @@ model FundingOpportunity {
   url         String    @id @default(cuid())
   title       String
   targetGroup String?   @map(name: "target_group")
-  duration    String?
   description String
   issuer      String
   type        String
   meta        Json
-  deadline    DateTime?
+  startAt     DateTime? @map(name: "start_at")
+  deadlineAt  DateTime? @map(name: "deadline_at")
   createdAt   DateTime  @default(now()) @map(name: "created_at")
   updatedAt   DateTime  @default(now()) @updatedAt @map(name: "updated_at")
   deletedAt   DateTime? @map(name: "deleted_at")
