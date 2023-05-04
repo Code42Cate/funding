@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { countFundingOpportunities, getFundingOpportunities } from '../../db/fundingOpportunities';
+import { countFundingOpportunities, getFundingOpportunities } from '../../../db/fundingOpportunities';
 import { FundingOpportunity } from '@prisma/client';
 
 export type GetFundingOpportunitiesResponse = {

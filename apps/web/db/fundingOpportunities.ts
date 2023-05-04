@@ -18,6 +18,7 @@ export const getFundingOpportunities = async (
       targetGroup: true,
       title: true,
       type: true,
+      id: true,
       url: true,
       meta: false,
     },
@@ -32,4 +33,29 @@ export const countFundingOpportunities = async (): Promise<number> => {
   const count = await db.fundingOpportunity.count();
 
   return count;
+};
+
+export const getFundingOpportunity = async (id: number, withoutMeta = true): Promise<FundingOpportunity> => {
+  const fundingOpportunity = await db.fundingOpportunity.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      createdAt: true,
+      updatedAt: true,
+      deadlineAt: true,
+      deletedAt: true,
+      issuer: true,
+      startAt: true,
+      targetGroup: true,
+      title: true,
+      type: true,
+      id: true,
+      url: true,
+      description: true,
+      meta: !withoutMeta,
+    },
+  });
+
+  return fundingOpportunity;
 };

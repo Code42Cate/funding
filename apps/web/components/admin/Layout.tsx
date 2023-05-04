@@ -1,20 +1,10 @@
-import {
-  PencilIcon,
-  LinkIcon,
-  EnvelopeIcon,
-  ArrowPathIcon,
-  HomeIcon,
-  CircleStackIcon,
-  CodeBracketIcon,
-} from '@heroicons/react/24/outline';
+import { EnvelopeIcon, ArrowPathIcon, HomeIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-
-// home, database, scraper, email
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();

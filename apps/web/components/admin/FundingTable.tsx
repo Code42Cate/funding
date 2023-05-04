@@ -1,10 +1,9 @@
-import useSWR from 'swr';
+import useSWR, { preload } from 'swr';
 import { useRouter } from 'next/router';
-import { GetFundingOpportunitiesResponse } from '../../pages/api/funding';
+import { GetFundingOpportunitiesResponse } from '../../pages/api/funding/index';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
-
-const fetcher = (url) => fetch(url).then((res) => res.json());
+import { fetcher } from '../../swr';
 
 export default function FundingTable() {
   const router = useRouter();
@@ -64,7 +63,12 @@ export default function FundingTable() {
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
                 {data?.fundingOpportunities.map((opportunity) => (
-                  <tr key={opportunity.url}>
+                  <tr
+                    key={opportunity.url}
+                    onMouseEnter={() => {
+                      preload('/api/funding/' + opportunity.id, fetcher);
+                    }}
+                  >
                     <td className="whitespace-pre-wrap py-2 pl-4 pr-3 text-sm text-gray-700 sm:pl-0">
                       {opportunity.title}
                     </td>
@@ -81,8 +85,8 @@ export default function FundingTable() {
                       <span className="px-2 py-1 bg-blue-500 rounded-full">{opportunity.type}</span>
                     </td>
                     <td className="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="#" className="text-green-600 hover:text-green-900">
-                        Edit<span className="sr-only">, {opportunity.url}</span>
+                      <a href={`/data/${opportunity.id}`} className="text-green-600 hover:text-green-900">
+                        Edit<span className="sr-only">, {opportunity.id}</span>
                       </a>
                     </td>
                   </tr>

@@ -1,6 +1,6 @@
-import FundingTable from '../components/admin/FundingTable';
+import FundingTable from '../../components/admin/FundingTable';
 import { GetServerSideProps } from 'next';
-import { countFundingOpportunities, getFundingOpportunities } from '../db/fundingOpportunities';
+import { countFundingOpportunities, getFundingOpportunities } from '../../db/fundingOpportunities';
 import { SWRConfig } from 'swr';
 
 export function Data({ fallback }) {

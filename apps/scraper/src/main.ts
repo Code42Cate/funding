@@ -26,7 +26,7 @@ const main = async () => {
 
   const euTendersResults = await eu.scrape();
 
-  const rows: FundingOpportunity[] = euTendersResults
+  const rows: Omit<FundingOpportunity, 'id'>[] = euTendersResults
     .filter((result) => result.topic?.description !== undefined)
     .map((result) => {
       return {
