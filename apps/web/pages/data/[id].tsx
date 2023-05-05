@@ -6,7 +6,10 @@ import { SWRConfig } from 'swr';
 export function FundingDetailPage({ fallback }) {
   return (
     <SWRConfig value={{ fallback }}>
-      <FundingDetail />
+      <div className="flex flex-col py-6 pl-8 gap-y-6 max-w-full">
+        <h1 className="text-3xl font-semibold">Funding Detail</h1>
+        <FundingDetail />
+      </div>
     </SWRConfig>
   );
 }

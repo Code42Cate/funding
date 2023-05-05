@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { fetcher } from '../../swr';
 import { useRef, useState, useLayoutEffect } from 'react';
 import { Pagination } from './FundingTablePagination';
-import FundingEntryMenu from './FundingEntryMenu';
+import { preload } from 'swr';
 
 const prettyPrintDate = (date: string | Date) =>
   new Date(date).toLocaleString('en-US', {
@@ -194,7 +194,18 @@ export default function FundingTable() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {data.fundingOpportunities.map((entry) => (
-                    <tr key={entry.id} className={selectedEntries.includes(entry) ? 'bg-gray-50' : undefined}>
+                    <tr
+                      onMouseEnter={() => {
+                        preload(`/api/funding/${entry.id}`, fetcher);
+                      }}
+                      onClick={() => {
+                        router.push(`/data/${entry.id}`);
+                      }}
+                      key={entry.id}
+                      className={classNames('cursor-pointer', {
+                        'bg-gray-50': selectedEntries.includes(entry),
+                      })}
+                    >
                       <td className="relative px-7 sm:w-12 sm:px-6">
                         {selectedEntries.includes(entry) && (
                           <div className="absolute inset-y-0 left-0 w-0.5 bg-purple-600" />
