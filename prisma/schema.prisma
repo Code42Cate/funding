@@ -12,19 +12,20 @@ datasource db {
 }
 
 model FundingOpportunity {
-  id          Int       @id @default(autoincrement())
-  url         String
-  title       String
-  targetGroup String?   @map(name: "target_group")
-  description String
-  issuer      String
-  type        String
-  meta        Json
-  startAt     DateTime? @map(name: "start_at")
-  deadlineAt  DateTime? @map(name: "deadline_at")
-  createdAt   DateTime  @default(now()) @map(name: "created_at")
-  updatedAt   DateTime  @default(now()) @updatedAt @map(name: "updated_at")
-  deletedAt   DateTime? @map(name: "deleted_at")
+  id                 Int       @id @default(autoincrement())
+  url                String
+  title              String
+  targetGroup        String?   @map(name: "target_group")
+  description        String
+  descriptionSummary String?   @map(name: "description_summary")
+  issuer             String
+  type               String
+  meta               Json
+  startAt            DateTime? @map(name: "start_at")
+  deadlineAt         DateTime? @map(name: "deadline_at")
+  createdAt          DateTime  @default(now()) @map(name: "created_at")
+  updatedAt          DateTime  @default(now()) @updatedAt @map(name: "updated_at")
+  deletedAt          DateTime? @map(name: "deleted_at")
 
   @@map(name: "funding_opportunities")
 }

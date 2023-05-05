@@ -6,7 +6,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export const getFundingOpportunities = async (
   page: number,
   pageSize = DEFAULT_PAGE_SIZE
-): Promise<Omit<FundingOpportunity, 'meta' | 'description'>[]> => {
+): Promise<Omit<FundingOpportunity, 'meta' | 'description' | 'descriptionSummary'>[]> => {
   const fundingOpportunities = await db.fundingOpportunity.findMany({
     select: {
       createdAt: true,
@@ -52,10 +52,22 @@ export const getFundingOpportunity = async (id: number, withoutMeta = true): Pro
       type: true,
       id: true,
       url: true,
+      descriptionSummary: true,
       description: true,
       meta: !withoutMeta,
     },
   });
 
   return fundingOpportunity;
+};
+
+export const saveGptDescription = async (id: number, descriptionSummary: string): Promise<void> => {
+  await db.fundingOpportunity.update({
+    where: {
+      id,
+    },
+    data: {
+      descriptionSummary,
+    },
+  });
 };

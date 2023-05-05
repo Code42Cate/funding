@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router';
-import { GetFundingOpportunityResponse } from '../admin/../../pages/api/funding/[id]';
+import { GetFundingOpportunityResponse } from '../../pages/api/funding/[id]/index';
 import { fetcher } from '../../swr';
 import useSWR from 'swr';
 import { PaperClipIcon } from '@heroicons/react/24/outline';
+import { StreamingTextURL } from 'nextjs-openai';
 
 const prettyPrintDate = (date: string | Date) =>
   new Date(date).toLocaleString('en-US', {
@@ -68,13 +69,11 @@ export const FundingDetail = () => {
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="text-sm font-medium text-gray-900">Description</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              This topic targets projects linked to an EIB framework loan in order to address serious social, economic
-              and environmental challenges deriving from the transition towards the EUs 2030 climate and energy targets.
-              Supported projects are related to renewable energy, green and sustainable mobility, efficient district
-              heating networks, public research, digitalisation, environmental infrastructure, urban renewal, circular
-              economy, land and ecosystem restoration, up-skilling and re-skilling, and social infrastructure.
-              Infrastructural development may include cross-border projects and solutions. Proposals should include
-              indicators evidencing measurable impact.
+              {data.descriptionSummary ? (
+                data.descriptionSummary
+              ) : (
+                <StreamingTextURL url={`/api/funding/${data.id}/description`} fade={100} throttle={100} />
+              )}
             </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

@@ -4,7 +4,7 @@ import { countFundingOpportunities, getFundingOpportunities } from '../../../db/
 import { FundingOpportunity } from '@prisma/client';
 
 export type GetFundingOpportunitiesResponse = {
-  fundingOpportunities: Omit<FundingOpportunity, 'meta' | 'description'>[];
+  fundingOpportunities: Omit<FundingOpportunity, 'meta' | 'description' | 'descriptionSummary'>[];
   total: number;
   pageSize: number;
 };
