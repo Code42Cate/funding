@@ -51,7 +51,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           <div className="flex w-full flex-col items-center space-y-4 sm:items-end">{/*TODO: Notifications */}</div>
         </div>
         <div className="absolute inset-y-0 flex flex-col">
-          <div className="flex flex-grow flex-col border-r border-gray-200 dark:border-gray-600 p-3">
+          <div className="flex flex-grow flex-col border-r border-gray-200 p-3">
             <div className="mt-1 flex flex-grow flex-col">
               <nav className="flex-1 space-y-1 px-1">
                 <Link
@@ -77,27 +77,25 @@ export const Layout = ({ children }: { children: ReactNode }) => {
                       className={classNames(
                         'flex items-center rounded-md p-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500',
                         {
-                          'bg-gray-100 dark:bg-gray-500': router.pathname === item.href,
-                          'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-500':
-                            router.pathname !== item.href,
+                          'bg-gray-100': router.pathname === item.href,
+                          'text-gray-600 hover:bg-gray-100 hover:text-gray-900': router.pathname !== item.href,
                         }
                       )}
                     >
                       <item.icon
                         className={classNames('m-1 h-6 w-6 flex-shrink-0', {
-                          'text-gray-600 dark:text-gray-300': router.pathname === item.href,
-                          'text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300':
-                            router.pathname !== item.href,
+                          'text-gray-600': router.pathname === item.href,
+                          'text-gray-500 group-hover:text-gray-600': router.pathname !== item.href,
                         })}
                         aria-hidden="true"
                       />
                     </Link>
                     {/* Help thingy */}
-                    <div className="invisible absolute top-3 left-16 z-20 w-max rounded border bg-gray-50 px-2 group-hover:visible dark:border-gray-900 dark:bg-gray-500">
-                      <span className="w-full text-xs text-gray-600 dark:text-gray-300">
+                    <div className="invisible absolute top-3 left-16 z-20 w-max rounded border bg-gray-50 px-2 group-hover:visible">
+                      <span className="w-full text-xs text-gray-600">
                         {item.name} {item.shortcut && `(${item.shortcut.toUpperCase()})`}
                       </span>
-                      <div className="absolute -left-[6px] top-[6px] border-y-[6px] border-r-[6px] border-l-0 border-solid border-y-transparent border-r-gray-200 dark:border-r-gray-500"></div>
+                      <div className="absolute -left-[6px] top-[6px] border-y-[6px] border-r-[6px] border-l-0 border-solid border-y-transparent border-r-gray-200"></div>
                     </div>
                   </div>
                 ))}

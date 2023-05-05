@@ -1,3 +1,4 @@
+import TotalIndexedItems from '../../components/admin/TotalIndexedItems';
 import ScraperTimer from '../../components/admin/ScraperTimer';
 import UptimeCard from '../../components/admin/Uptime';
 import { useRouter } from 'next/router';
@@ -16,6 +17,8 @@ export function ScraperDetail({ fallback }) {
       <UptimeCard />
 
       <ScraperTimer />
+
+      <TotalIndexedItems />
     </div>
   );
 }
