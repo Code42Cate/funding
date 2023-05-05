@@ -2,8 +2,10 @@ import { useRouter } from 'next/router';
 import { GetFundingOpportunityResponse } from '../../pages/api/funding/[id]/index';
 import { fetcher } from '../../swr';
 import useSWR from 'swr';
-import { PaperClipIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, PaperClipIcon } from '@heroicons/react/24/outline';
 import { StreamingTextURL } from 'nextjs-openai';
+import { useState } from 'react';
+import classNames from 'classnames';
 
 const prettyPrintDate = (date: string | Date) =>
   new Date(date).toLocaleString('en-US', {
@@ -18,6 +20,8 @@ export const FundingDetail = () => {
   const router = useRouter();
 
   const { data } = useSWR<GetFundingOpportunityResponse>(`/api/funding/${router.query.id}`, fetcher);
+
+  const [showOriginalDescription, setShowOriginalDescription] = useState(false);
 
   return (
     <div className="overflow-hidden bg-white shadow-sm rounded-md border max-w-5xl border-gray-300">
@@ -74,6 +78,23 @@ export const FundingDetail = () => {
               ) : (
                 <StreamingTextURL url={`/api/funding/${data.id}/description`} fade={100} throttle={100} />
               )}
+
+              <div className="mt-4">
+                <button
+                  className="flex items-center underline underline-offset-4"
+                  onClick={() => setShowOriginalDescription(!showOriginalDescription)}
+                >
+                  {showOriginalDescription ? 'Hide' : 'Show'} Original Description{' '}
+                  <ChevronDownIcon
+                    className={classNames('w-4 h-4 text-gray-500 ml-1 transition-all duration-500', {
+                      '-rotate-180': showOriginalDescription,
+                    })}
+                  />
+                </button>
+                {showOriginalDescription && (
+                  <div className="mt-4 description" dangerouslySetInnerHTML={{ __html: data.description }} />
+                )}
+              </div>
             </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
