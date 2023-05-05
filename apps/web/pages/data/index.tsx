@@ -6,7 +6,8 @@ import { SWRConfig } from 'swr';
 export function Data({ fallback }) {
   return (
     <SWRConfig value={{ fallback }}>
-      <div className="text-blue-400 flex flex-col justify-center max-w-7xl mx-auto p-10">
+      <div className="flex flex-col py-6 pl-4 gap-y-6 max-w-full">
+        <h1 className="text-3xl font-semibold">Funding Database</h1>
         <FundingTable />
       </div>
     </SWRConfig>

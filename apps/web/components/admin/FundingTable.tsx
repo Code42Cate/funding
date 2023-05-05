@@ -4,6 +4,46 @@ import { GetFundingOpportunitiesResponse } from '../../pages/api/funding/index';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { fetcher } from '../../swr';
+import { useRef, useState, useLayoutEffect } from 'react';
+
+const prettyPrintDate = (date: string | Date) =>
+  new Date(date).toLocaleString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+
+const prettyPrintTitle = (text: string) => text.toLowerCase().replace(/(?<!\S)\S/g, (initial) => initial.toUpperCase());
+
+const isEntryActive = (entry: GetFundingOpportunitiesResponse['fundingOpportunities'][0]) =>
+  entry.deletedAt === null && new Date(entry.deadlineAt) > new Date();
+
+const StatusBadge = ({ status }: { status: 'active' | 'inactive' }) => (
+  <div
+    className={classNames('px-2 py-1 text-sm text-center w-min flex gap-2 items-center rounded-full', {
+      'bg-green-100 text-green-800': status === 'active',
+      'bg-yellow-100 text-yellow-800': status === 'inactive',
+    })}
+  >
+    <div
+      className={classNames('w-2 h-2 rounded-full', {
+        'bg-green-500': status === 'active',
+        'bg-yellow-500': status === 'inactive',
+      })}
+    />
+    {status === 'active' ? 'Active' : 'Inactive'}
+  </div>
+);
+
+const TypeBadge = ({ type }: { type: string }) => (
+  <div
+    className={classNames('px-2 py-1 text-sm text-center w-min bg-gray-100 text-gray-800 rounded-full', {
+      'bg-blue-100 text-blue-800': type === 'EU',
+    })}
+  >
+    {type}
+  </div>
+);
 
 export default function FundingTable() {
   const router = useRouter();
@@ -12,91 +52,138 @@ export default function FundingTable() {
 
   const { data } = useSWR<GetFundingOpportunitiesResponse>(`/api/funding?page=${page}`, fetcher);
 
+  const checkbox = useRef<HTMLInputElement | null>(null);
+  const [checked, setChecked] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [selectedEntries, setSelectedEntries] = useState([]);
+
+  useLayoutEffect(() => {
+    const isIndeterminate = selectedEntries.length > 0 && selectedEntries.length < data.fundingOpportunities.length;
+    setChecked(selectedEntries.length === data.fundingOpportunities.length);
+    setIndeterminate(isIndeterminate);
+    if (checkbox.current) {
+      checkbox.current.indeterminate = isIndeterminate;
+    }
+  }, [selectedEntries, data.fundingOpportunities.length]);
+
+  function toggleAll() {
+    setSelectedEntries(checked || indeterminate ? [] : data.fundingOpportunities);
+    setChecked(!checked && !indeterminate);
+    setIndeterminate(false);
+  }
+
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">Funding Opportunities List</h1>
-          <p className="mt-2 text-sm text-gray-700">A table of all funding opportunities available.</p>
-        </div>
-      </div>
+    <div className="border border-gray-300 shadow-md rounded-lg max-w-7xl">
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full divide-y divide-gray-300">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+          <div className="inline-block w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="relative">
+              {selectedEntries.length > 0 && (
+                <div className="absolute left-14 top-0 flex h-12 items-center space-x-3 bg-white sm:left-12">
+                  <button
+                    type="button"
+                    className="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                   >
-                    Title
-                  </th>
-                  <th
-                    scope="col"
-                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    Bulk edit
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                   >
-                    Program
-                  </th>
-                  <th
-                    scope="col"
-                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Start Date
-                  </th>
-                  <th
-                    scope="col"
-                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    End Date
-                  </th>
-                  <th
-                    scope="col"
-                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Type
-                  </th>
-                  <th scope="col" className="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
-                    <span className="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {data?.fundingOpportunities.map((opportunity) => (
-                  <tr
-                    key={opportunity.url}
-                    onMouseEnter={() => {
-                      preload('/api/funding/' + opportunity.id, fetcher);
-                    }}
-                  >
-                    <td className="whitespace-pre-wrap py-2 pl-4 pr-3 text-sm text-gray-700 sm:pl-0">
-                      {opportunity.title}
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">
-                      {opportunity.issuer}
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-mono">
-                      {new Date(opportunity.startAt).toDateString()}
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-mono">
-                      {new Date(opportunity.deadlineAt).toDateString()}
-                    </td>
-                    <td className="whitespace-nowrap px-2 py-2 text-sm text-center text-white">
-                      <span className="px-2 py-1 bg-blue-500 rounded-full">{opportunity.type}</span>
-                    </td>
-                    <td className="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href={`/data/${opportunity.id}`} className="text-green-600 hover:text-green-900">
-                        Edit<span className="sr-only">, {opportunity.id}</span>
-                      </a>
-                    </td>
+                    Delete all
+                  </button>
+                </div>
+              )}
+              <table className="min-w-full table-fixed divide-y divide-gray-300">
+                <thead>
+                  <tr>
+                    <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
+                      <input
+                        type="checkbox"
+                        className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-600"
+                        ref={checkbox}
+                        checked={checked}
+                        onChange={toggleAll}
+                      />
+                    </th>
+                    <th scope="col" className="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 w-96">
+                      Title
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-center text-sm font-semibold text-gray-900 w-36">
+                      Status
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      First Indexed
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Last Updated
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Source
+                    </th>
+                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-3">
+                      <span className="sr-only">Edit</span>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {data.fundingOpportunities.map((entry) => (
+                    <tr key={entry.id} className={selectedEntries.includes(entry) ? 'bg-gray-50' : undefined}>
+                      <td className="relative px-7 sm:w-12 sm:px-6">
+                        {selectedEntries.includes(entry) && (
+                          <div className="absolute inset-y-0 left-0 w-0.5 bg-green-600" />
+                        )}
+                        <input
+                          type="checkbox"
+                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-600"
+                          value={entry.id}
+                          checked={selectedEntries.includes(entry)}
+                          onChange={(e) =>
+                            setSelectedEntries(
+                              e.target.checked
+                                ? [...selectedEntries, entry]
+                                : selectedEntries.filter((p) => p !== entry)
+                            )
+                          }
+                        />
+                      </td>
+                      <td
+                        className={classNames(
+                          'whitespace-pre-line py-4 pr-3 text-sm',
+                          selectedEntries.includes(entry) ? 'text-green-600' : 'text-gray-900'
+                        )}
+                      >
+                        <div className="w-96 truncate font-medium">{prettyPrintTitle(entry.title)}</div>
+                        <div className="text-gray-700">{entry.issuer}</div>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <div className="justify-center align-middle h-full flex">
+                          <StatusBadge status={isEntryActive(entry) ? 'active' : 'inactive'} />
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {prettyPrintDate(entry.createdAt)}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {prettyPrintDate(entry.updatedAt)}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left">
+                        <TypeBadge type={entry.type} />
+                      </td>
+                      <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                        <a href="#" className="text-green-600 hover:text-green-900">
+                          Edit<span className="sr-only">, {entry.id}</span>
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between bg-white py-3 mt-8">
+      <div className="flex items-center justify-between p-5 mt-8">
         <div className="flex flex-1 justify-between sm:hidden">
           <a
             href="#"

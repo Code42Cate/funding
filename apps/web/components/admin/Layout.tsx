@@ -104,7 +104,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
 
-        <div className="flex h-screen flex-1 flex-col overflow-x-auto pl-24">
+        <div className="flex h-screen flex-1 flex-col overflow-x-auto pl-20">
           <main className="h-full flex-1">{children}</main>
         </div>
       </div>
