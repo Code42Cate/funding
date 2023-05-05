@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { fetcher } from '../../swr';
 import { useRef, useState, useLayoutEffect } from 'react';
 import { Pagination } from './FundingTablePagination';
+import FundingEntryMenu from './FundingEntryMenu';
 
 const prettyPrintDate = (date: string | Date) =>
   new Date(date).toLocaleString('en-US', {
@@ -141,22 +142,21 @@ export default function FundingTable() {
       </div>
 
       <div className="flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="-mx-4 -my-2 overflow-y-visible sm:-mx-6 lg:-mx-8">
           <div className="inline-block w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="relative">
               {selectedEntries.length > 0 && (
                 <div className="absolute left-14 top-0 flex h-12 items-center space-x-3 bg-white sm:left-12">
                   <button
+                    onClick={() =>
+                      selectedEntries.forEach((entry) =>
+                        window.open(`${window.location.origin}/data/${entry.id}`, '_blank_' + entry.id)
+                      )
+                    }
                     type="button"
                     className="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                   >
-                    Bulk edit
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
-                  >
-                    Delete all
+                    Bulk open
                   </button>
                 </div>
               )}
@@ -187,9 +187,9 @@ export default function FundingTable() {
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Source
                     </th>
-                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-3">
+                    {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-3">
                       <span className="sr-only">Edit</span>
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -236,11 +236,9 @@ export default function FundingTable() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left">
                         <TypeBadge type={entry.type} />
                       </td>
-                      <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                        <a href="#" className="text-purple-600 hover:text-purple-900">
-                          Edit<span className="sr-only">, {entry.id}</span>
-                        </a>
-                      </td>
+                      {/*     <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                        <FundingEntryMenu />
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
