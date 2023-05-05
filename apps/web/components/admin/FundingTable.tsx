@@ -1,7 +1,7 @@
 import useSWR, { preload } from 'swr';
 import { useRouter } from 'next/router';
 import { GetFundingOpportunitiesResponse } from '../../pages/api/funding/index';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { fetcher } from '../../swr';
 import { useRef, useState, useLayoutEffect } from 'react';
@@ -37,7 +37,7 @@ const StatusBadge = ({ status }: { status: 'active' | 'inactive' }) => (
 
 const TypeBadge = ({ type }: { type: string }) => (
   <div
-    className={classNames('px-2 py-1 text-sm text-center w-min bg-gray-100 text-gray-800 rounded-full', {
+    className={classNames('px-2 py-1 text-sm text-center w-min rounded-full', {
       'bg-blue-100 text-blue-800': type === 'EU',
     })}
   >
@@ -50,7 +50,10 @@ export default function FundingTable() {
 
   const page = Number(router.query.page ?? 1);
 
-  const { data } = useSWR<GetFundingOpportunitiesResponse>(`/api/funding?page=${page}`, fetcher);
+  const { data } = useSWR<GetFundingOpportunitiesResponse>(
+    `/api/funding?page=${page}&search=${router.query.search ?? ''}`,
+    fetcher
+  );
 
   const checkbox = useRef<HTMLInputElement | null>(null);
   const [checked, setChecked] = useState(false);
@@ -66,15 +69,77 @@ export default function FundingTable() {
     }
   }, [selectedEntries, data.fundingOpportunities.length]);
 
-  function toggleAll() {
+  const toggleAll = () => {
     setSelectedEntries(checked || indeterminate ? [] : data.fundingOpportunities);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
-  }
+  };
 
   return (
     <div className="border border-gray-300 shadow-md rounded-lg max-w-7xl">
-      <div className="mt-8 flow-root">
+      <div className="p-4 border-b border-gray-200 flex justify-between">
+        {/* Filter */}
+        <div className="flex gap-x-2 items-center align-middle">
+          <button
+            type="button"
+            className="inline-flex items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 h-fit text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+          >
+            All Time
+            <XMarkIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 h-fit text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+          >
+            Active
+            <XMarkIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" />
+          </button>
+
+          <button
+            type="button"
+            className="inline-flex items-center gap-x-1.5 rounded-md px-3 py-2 h-fit text-sm font-semibold text-gray-800 shadow-sm border-gray-300 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600 hover:bg-gray-50"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M6 12H18M3 6H21M9 18H15"
+                stroke="black"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            More Filters
+          </button>
+        </div>
+
+        {/* Search */}
+        <div>
+          <div>
+            <div className="relative rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              </div>
+              <input
+                type="text"
+                name="search"
+                id="search"
+                className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 sm:text-sm sm:leading-6"
+                placeholder="Search"
+                value={router.query.search ? decodeURIComponent(router.query.search as string) : ''}
+                onChange={(e) => {
+                  if (e.target.value === '') {
+                    router.replace(`/data`);
+                  } else {
+                    router.replace(`/data?search=${encodeURIComponent(e.target.value)}`);
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="relative">
@@ -100,7 +165,7 @@ export default function FundingTable() {
                     <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
                       <input
                         type="checkbox"
-                        className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-600"
+                        className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600"
                         ref={checkbox}
                         checked={checked}
                         onChange={toggleAll}
@@ -131,11 +196,11 @@ export default function FundingTable() {
                     <tr key={entry.id} className={selectedEntries.includes(entry) ? 'bg-gray-50' : undefined}>
                       <td className="relative px-7 sm:w-12 sm:px-6">
                         {selectedEntries.includes(entry) && (
-                          <div className="absolute inset-y-0 left-0 w-0.5 bg-green-600" />
+                          <div className="absolute inset-y-0 left-0 w-0.5 bg-purple-600" />
                         )}
                         <input
                           type="checkbox"
-                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-600"
+                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600"
                           value={entry.id}
                           checked={selectedEntries.includes(entry)}
                           onChange={(e) =>
@@ -150,7 +215,7 @@ export default function FundingTable() {
                       <td
                         className={classNames(
                           'whitespace-pre-line py-4 pr-3 text-sm',
-                          selectedEntries.includes(entry) ? 'text-green-600' : 'text-gray-900'
+                          selectedEntries.includes(entry) ? 'text-purple-600' : 'text-gray-900'
                         )}
                       >
                         <div className="w-96 truncate font-medium">{prettyPrintTitle(entry.title)}</div>
@@ -171,7 +236,7 @@ export default function FundingTable() {
                         <TypeBadge type={entry.type} />
                       </td>
                       <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                        <a href="#" className="text-green-600 hover:text-green-900">
+                        <a href="#" className="text-purple-600 hover:text-purple-900">
                           Edit<span className="sr-only">, {entry.id}</span>
                         </a>
                       </td>
@@ -218,19 +283,28 @@ export default function FundingTable() {
                   onClick={() => router.replace(`/data?page=${i + 1}`)}
                   key={`pagination-number${i}`}
                   aria-current="page"
-                  className={classNames({
-                    'relative z-10 inline-flex items-center bg-green-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600':
-                      page === i + 1,
-                    'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0':
-                      page !== i + 1,
-                  })}
+                  className={classNames(
+                    'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
+                    {
+                      'z-10 bg-purple-100  text-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600':
+                        page === i + 1,
+                      'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0':
+                        page !== i + 1,
+                    }
+                  )}
                 >
                   {i + 1}
                 </button>
               ))}
 
               <button
-                onClick={() => router.replace(`/data?page=${Number(router.query.page ?? 1) + 1}`)}
+                onClick={() => {
+                  const query: Record<string, string | number | string[]> = {
+                    page: page + 1,
+                  };
+                  if (router.query.search) query.search = router.query.search;
+                  router.replace({ query });
+                }}
                 className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
                 <span className="sr-only">Next</span>

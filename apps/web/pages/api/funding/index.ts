@@ -14,8 +14,9 @@ const PAGE_SIZE = 10;
 export default async function funding(req: NextApiRequest, res: NextApiResponse<GetFundingOpportunitiesResponse>) {
   if (req.method === 'GET') {
     const page = Number(req.query.page) || 1;
+    const search = String(req.query.search) || '';
 
-    const fundingOpportunities = await getFundingOpportunities(page);
+    const fundingOpportunities = await getFundingOpportunities(page, PAGE_SIZE);
 
     const count = await countFundingOpportunities();
 

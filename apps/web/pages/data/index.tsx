@@ -17,9 +17,12 @@ export function Data({ fallback }) {
 const PAGE_SIZE = 10;
 
 // get funding opportunities from the database with pagination
-export const getServerSideProps: GetServerSideProps = async ({ query: { page = 1 } }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query: { page = 1, search = '' } }) => {
   if (typeof page !== 'string' && !Number.isInteger(page)) {
     throw new Error('Invalid page');
+  }
+  if (typeof search !== 'string') {
+    throw new Error('Invalid search');
   }
 
   const fundingOpportunities = await getFundingOpportunities(Number(page), PAGE_SIZE);
@@ -27,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query: { page = 1
   return {
     props: {
       fallback: {
-        [`/api/funding?page=${page}`]: {
+        [`/api/funding?page=${page}&search=${search}`]: {
           fundingOpportunities: JSON.parse(JSON.stringify(fundingOpportunities)),
           total: await countFundingOpportunities(),
           pageSize: PAGE_SIZE,
