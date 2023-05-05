@@ -1,7 +1,7 @@
-import useSWR, { preload } from 'swr';
+import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import { GetFundingOpportunitiesResponse } from '../../pages/api/funding/index';
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { fetcher } from '../../swr';
 import { useRef, useState, useLayoutEffect } from 'react';
