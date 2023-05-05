@@ -273,20 +273,48 @@ export default function FundingTable() {
           </div>
           <div>
             <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-              <button className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+              <button
+                onMouseEnter={() =>
+                  preload(`/api/funding?page=${page - 1}&search=${router.query.search ?? ''}`, fetcher)
+                }
+                className={classNames(
+                  'relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0',
+                  {
+                    'cursor-not-allowed opacity-30': page === 1,
+                  }
+                )}
+                onClick={() => {
+                  if (page === 1) return;
+
+                  const query: Record<string, string | number | string[]> = {
+                    page: page - 1,
+                  };
+                  if (router.query.search) query.search = router.query.search;
+                  router.replace({ query });
+                }}
+              >
                 <span className="sr-only">Previous</span>
                 <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
               </button>
 
-              {Array.from({ length: 7 }).map((_, i) => (
+              {Array.from({ length: 3 }).map((_, i) => (
                 <button
-                  onClick={() => router.replace(`/data?page=${i + 1}`)}
+                  onMouseEnter={() => {
+                    preload(`/api/funding?page=${i + 1}&search=${router.query.search ?? ''}`, fetcher);
+                  }}
+                  onClick={() => {
+                    const query: Record<string, string | number | string[]> = {
+                      page: i + 1,
+                    };
+                    if (router.query.search) query.search = router.query.search;
+                    router.replace({ query });
+                  }}
                   key={`pagination-number${i}`}
                   aria-current="page"
                   className={classNames(
                     'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
                     {
-                      'z-10 bg-purple-100  text-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600':
+                      'z-10 bg-purple-100 ring-1 ring-inset ring-purple-300 text-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600':
                         page === i + 1,
                       'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0':
                         page !== i + 1,
@@ -298,14 +326,66 @@ export default function FundingTable() {
               ))}
 
               <button
+                aria-current="page"
+                className={classNames(
+                  'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 text-gray-900 ring-1 ring-inset ring-gray-300 cursor-default'
+                )}
+              >
+                ...
+              </button>
+
+              {Array.from({ length: 3 }).map((_, i) => (
+                <button
+                  onMouseEnter={() =>
+                    preload(
+                      `/api/funding?page=${Math.ceil(data.total / data.pageSize - 2 + i)}&search=${
+                        router.query.search ?? ''
+                      }`,
+                      fetcher
+                    )
+                  }
+                  onClick={() => {
+                    const query: Record<string, string | number | string[]> = {
+                      page: Math.ceil(data.total / data.pageSize - 2 + i),
+                    };
+                    if (router.query.search) query.search = router.query.search;
+                    router.replace({ query });
+                  }}
+                  key={`pagination-number${i}`}
+                  aria-current="page"
+                  className={classNames(
+                    'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
+                    {
+                      'z-10 bg-purple-100 ring-1 ring-inset ring-purple-300 text-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600':
+                        page === Math.ceil(data.total / data.pageSize - 2 + i),
+                      'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0':
+                        page !== Math.ceil(data.total / data.pageSize - 2 + i),
+                    }
+                  )}
+                >
+                  {Math.ceil(data.total / data.pageSize - 2 + i)}
+                </button>
+              ))}
+
+              <button
+                onMouseEnter={() =>
+                  preload(`/api/funding?page=${page + 1}&search=${router.query.search ?? ''}`, fetcher)
+                }
                 onClick={() => {
+                  if (page === Math.ceil(data.total / data.pageSize)) return;
+
                   const query: Record<string, string | number | string[]> = {
                     page: page + 1,
                   };
                   if (router.query.search) query.search = router.query.search;
                   router.replace({ query });
                 }}
-                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                className={classNames(
+                  'relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0',
+                  {
+                    'cursor-not-allowed opacity-30': page === Math.ceil(data.total / data.pageSize),
+                  }
+                )}
               >
                 <span className="sr-only">Next</span>
                 <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
