@@ -1,3 +1,5 @@
+import NotificationsChart from '../components/admin/NotificationsChart';
+
 export const NotificationsPage = () => {
   return (
     <div className="flex flex-col py-6 pl-8 gap-y-6 max-w-full">
@@ -8,6 +10,7 @@ export const NotificationsPage = () => {
         <li>View what the last notifications where</li>
         <li>line graph of sent-out notifications</li>
       </ul>
+      <NotificationsChart />
     </div>
   );
 };
