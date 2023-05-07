@@ -24,7 +24,7 @@ const main = async () => {
     })
   );
 
-  const euTendersResults = await eu.scrape();
+  /*   const euTendersResults = await eu.scrape();
 
   const rows: Omit<FundingOpportunity, 'id'>[] = euTendersResults
     .filter((result) => result.topic?.description !== undefined)
@@ -36,7 +36,7 @@ const main = async () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
-
+        descriptionSummary: undefined,
         targetGroup: '',
         issuer:
           result.topic?.programmeDivision?.[0]?.abbreviation ??
@@ -55,8 +55,38 @@ const main = async () => {
     data: rows,
     skipDuplicates: true,
   });
+ */
 
-  console.log(rows);
+  const daadResults = await daad.scrape();
+
+  const rows: Omit<FundingOpportunity, 'id'>[] = daadResults
+    .filter((result) => result.title !== undefined)
+    .map((result) => {
+      return {
+        url: `https://www2.daad.de/deutschland/stipendium/datenbank/de/21148-stipendiendatenbank/?detail=${result.id}`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        startAt: null,
+        deadlineAt: null,
+        deletedAt: null,
+        description: Object.entries(result.fields)
+          .map(([key, value]) => `<span>${key}</span>\n <p>${value}</p>`)
+          .join('\n'),
+        descriptionSummary: null,
+        issuer: result.title.includes(':') ? result.title.split(':')[0] : 'Unknown issuer',
+        meta: JSON.stringify(result),
+        targetGroup: '',
+        title: result.title,
+        type: 'DAAD',
+      };
+    });
+
+  // DRO
+
+  await db.fundingOpportunity.createMany({
+    data: rows,
+    skipDuplicates: true,
+  });
 
   console.log('Done!');
 };
