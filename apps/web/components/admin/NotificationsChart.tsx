@@ -37,9 +37,9 @@ const HEIGHT = 250;
 
 export const NotificationsChart = () => {
   return (
-    <div className="rounded-md border border-gray-100 shadow-md p-4 w-fit flex flex-col">
-      <div className="flex flex-row items-center align-middle mb-4 gap-x-2">
-        <div className="rounded-md bg-green-100 p-1 h-fit">
+    <div className="flex w-fit flex-col rounded-md border border-gray-100 p-4 shadow-md">
+      <div className="mb-4 flex flex-row items-center gap-x-2 align-middle">
+        <div className="h-fit rounded-md bg-green-100 p-1">
           <BellAlertIcon className="h-4 w-4 text-green-700" strokeWidth={2} />
         </div>
         <div className="font-semibold">Daily Notifications</div>
@@ -72,6 +72,14 @@ export const NotificationsChart = () => {
           padding={{ left: 20, right: 20 }}
         />
         <Tooltip
+          labelFormatter={(v: string) =>
+            new Date(v).toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })
+          }
+          formatter={(v: number) => [v, 'Notifications']}
           contentStyle={{
             borderRadius: '8px',
           }}
