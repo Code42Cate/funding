@@ -22,13 +22,13 @@ const isEntryActive = (entry: GetFundingOpportunitiesResponse['fundingOpportunit
 
 const StatusBadge = ({ status }: { status: 'active' | 'inactive' }) => (
   <div
-    className={classNames('px-2 py-1 text-sm text-center w-min flex gap-2 items-center rounded-full', {
+    className={classNames('flex w-min items-center gap-2 rounded-full px-2 py-1 text-center text-sm', {
       'bg-green-100 text-green-800': status === 'active',
       'bg-yellow-100 text-yellow-800': status === 'inactive',
     })}
   >
     <div
-      className={classNames('w-2 h-2 rounded-full', {
+      className={classNames('h-2 w-2 rounded-full', {
         'bg-green-500': status === 'active',
         'bg-yellow-500': status === 'inactive',
       })}
@@ -39,7 +39,7 @@ const StatusBadge = ({ status }: { status: 'active' | 'inactive' }) => (
 
 const TypeBadge = ({ type }: { type: string }) => (
   <div
-    className={classNames('px-2 py-1 text-sm text-center w-min rounded-full', {
+    className={classNames('w-min rounded-full px-2 py-1 text-center text-sm', {
       'bg-blue-100 text-blue-800': type === 'EU',
     })}
   >
@@ -78,20 +78,20 @@ export default function FundingTable() {
   };
 
   return (
-    <div className="border border-gray-300 shadow-md rounded-lg max-w-7xl">
-      <div className="p-4 border-b border-gray-200 flex justify-between">
+    <div className="max-w-7xl rounded-lg border border-gray-300 shadow-md">
+      <div className="flex justify-between border-b border-gray-200 p-4">
         {/* Filter */}
-        <div className="flex gap-x-2 items-center align-middle">
+        <div className="flex items-center gap-x-2 align-middle">
           <button
             type="button"
-            className="inline-flex items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 h-fit text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+            className="inline-flex h-fit items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
           >
             All Time
             <XMarkIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" />
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 h-fit text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+            className="inline-flex h-fit items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
           >
             Active
             <XMarkIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" />
@@ -99,7 +99,7 @@ export default function FundingTable() {
 
           <button
             type="button"
-            className="inline-flex items-center gap-x-1.5 rounded-md px-3 py-2 h-fit text-sm font-semibold text-gray-800 shadow-sm border-gray-300 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600 hover:bg-gray-50"
+            className="inline-flex h-fit items-center gap-x-1.5 rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -172,10 +172,10 @@ export default function FundingTable() {
                         onChange={toggleAll}
                       />
                     </th>
-                    <th scope="col" className="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 w-96">
+                    <th scope="col" className="w-96 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
                       Title
                     </th>
-                    <th scope="col" className="px-3 py-3.5 text-center text-sm font-semibold text-gray-900 w-36">
+                    <th scope="col" className="w-36 px-3 py-3.5 text-center text-sm font-semibold text-gray-900">
                       Status
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -198,7 +198,12 @@ export default function FundingTable() {
                       onMouseEnter={() => {
                         preload(`/api/funding/${entry.id}`, fetcher);
                       }}
-                      onClick={() => {
+                      onClick={(event) => {
+                        // ignore first column and checkbox
+                        // @ts-expect-error couldnt care less about the actual event type, IT WORKS
+                        if (event.target === event.currentTarget.children[0] || event.target.tagName === 'INPUT')
+                          return;
+
                         router.push(`/data/${entry.id}`);
                       }}
                       key={entry.id}
@@ -206,13 +211,13 @@ export default function FundingTable() {
                         'bg-gray-50': selectedEntries.includes(entry),
                       })}
                     >
-                      <td className="relative px-7 sm:w-12 sm:px-6">
+                      <td className="relative cursor-default px-7 sm:w-12 sm:px-6">
                         {selectedEntries.includes(entry) && (
                           <div className="absolute inset-y-0 left-0 w-0.5 bg-purple-600" />
                         )}
                         <input
                           type="checkbox"
-                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600"
+                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 cursor-pointer rounded border-gray-300 text-purple-600 focus:ring-purple-600"
                           value={entry.id}
                           checked={selectedEntries.includes(entry)}
                           onChange={(e) =>
@@ -234,7 +239,7 @@ export default function FundingTable() {
                         <div className="text-gray-700">{entry.issuer}</div>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        <div className="justify-center align-middle h-full flex">
+                        <div className="flex h-full justify-center align-middle">
                           <StatusBadge status={isEntryActive(entry) ? 'active' : 'inactive'} />
                         </div>
                       </td>
@@ -244,7 +249,7 @@ export default function FundingTable() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {prettyPrintDate(entry.updatedAt)}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left">
+                      <td className="whitespace-nowrap px-3 py-4 text-left text-sm text-gray-500">
                         <TypeBadge type={entry.type} />
                       </td>
                       {/*     <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
