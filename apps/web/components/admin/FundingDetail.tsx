@@ -24,7 +24,7 @@ export const FundingDetail = () => {
   const [showOriginalDescription, setShowOriginalDescription] = useState(false);
 
   return (
-    <div className="overflow-hidden bg-white shadow-sm rounded-md border max-w-5xl border-gray-300">
+    <div className="max-w-5xl overflow-hidden rounded-md border border-gray-300 bg-white shadow-sm">
       <div className="border-t border-gray-100">
         <dl className="divide-y divide-gray-100">
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -39,8 +39,8 @@ export const FundingDetail = () => {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="text-sm font-medium text-gray-900">URL</dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 truncate">
-              <a className="text-blue-500 hover:underline underline-offset-2" href={data.url}>
+            <dd className="mt-1 truncate text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              <a className="text-blue-500 underline-offset-2 hover:underline" href={data.url}>
                 {data.url}
               </a>
             </dd>
@@ -57,18 +57,22 @@ export const FundingDetail = () => {
               {prettyPrintDate(data.updatedAt)}
             </dd>
           </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-900">Start At</dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {prettyPrintDate(data.startAt)}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-900">Deadline At</dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {prettyPrintDate(data.deadlineAt)}
-            </dd>
-          </div>
+          {data.startAt && (
+            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-900">Start At</dt>
+              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                {prettyPrintDate(data.startAt)}
+              </dd>
+            </div>
+          )}
+          {data.deadlineAt && (
+            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-900">Deadline At</dt>
+              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                {prettyPrintDate(data.deadlineAt)}
+              </dd>
+            </div>
+          )}
 
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="text-sm font-medium text-gray-900">Description</dt>
@@ -86,13 +90,13 @@ export const FundingDetail = () => {
                 >
                   {showOriginalDescription ? 'Hide' : 'Show'} Original Description{' '}
                   <ChevronDownIcon
-                    className={classNames('w-4 h-4 text-gray-500 ml-1 transition-all duration-500', {
+                    className={classNames('ml-1 h-4 w-4 text-gray-500 transition-all duration-500', {
                       '-rotate-180': showOriginalDescription,
                     })}
                   />
                 </button>
                 {showOriginalDescription && (
-                  <div className="mt-4 description" dangerouslySetInnerHTML={{ __html: data.description }} />
+                  <div className="description mt-4" dangerouslySetInnerHTML={{ __html: data.description }} />
                 )}
               </div>
             </dd>
