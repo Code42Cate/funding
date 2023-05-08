@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.description span {
+  @apply my-2 text-lg font-medium text-gray-900;
+}
+
+.description ul {
+  @apply list-inside list-disc;
+}
+
+.description p {
+  @apply mb-2 text-base text-gray-800;
+}
