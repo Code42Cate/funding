@@ -19,6 +19,7 @@
     "next": "13.4.0",
     "nextjs-openai": "^6.9.0",
     "openai-streams": "^5.1.1",
+    "pdf-parse": "^1.1.1",
     "prisma": "^4.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
