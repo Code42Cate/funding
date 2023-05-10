@@ -1,29 +1,26 @@
 import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRef, useState } from 'react';
+import { parseTextFromPdf } from '../utils/pdf';
+import { parseTextFromTxt } from '../utils/txt';
 
 export default function DescriptionInput() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [description, setDescription] = useState<string>('');
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     const file = inputRef.current?.files?.[0];
 
     if (!file) {
       return;
     }
-
-    if (file.name.endsWith('.txt')) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const text = e.target?.result;
-        setDescription(text as string);
-        console.log(text);
-      };
-
-      reader.readAsText(file);
-    } else if (file.name.endsWith('.pdf')) {
-      // use pdf-parse to extract text from pdf
+    try {
+      if (file.name.endsWith('.txt')) {
+        setDescription(await parseTextFromTxt(file));
+      } else if (file.name.endsWith('.pdf')) {
+        setDescription(await parseTextFromPdf(file));
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -44,8 +41,8 @@ export default function DescriptionInput() {
         />
       </div>
 
-      <div className="absolute inset-x-px bottom-0">
-        <div className="flex items-center justify-between space-x-3 border-t border-gray-200 px-2 py-2 sm:px-3">
+      <div className="absolute inset-x-px bottom-0 rounded-lg bg-white">
+        <div className="flex items-center justify-between space-x-3 rounded-lg border-b border-t border-gray-200 px-2 py-2 sm:px-3">
           <div className="flex">
             <input type="file" className="sr-only" ref={inputRef} onChange={handleUpload} />
             <button
@@ -64,7 +61,7 @@ export default function DescriptionInput() {
               type="submit"
               className="inline-flex items-center rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 hover:text-purple-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
             >
-              Create
+              Find me money
             </button>
           </div>
         </div>
