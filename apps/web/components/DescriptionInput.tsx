@@ -51,8 +51,8 @@ export default function DescriptionInput() {
               className="group -my-2 -ml-2 inline-flex items-center rounded-full px-3 py-2 text-left text-gray-400"
             >
               <PaperClipIcon className="-ml-1 mr-2 h-5 w-5 group-hover:text-gray-500" aria-hidden="true" />
-              <span className="text-sm italic text-gray-500 group-hover:text-gray-600">
-                Extract from file (.pdf or .txt)
+              <span className="text-sm text-gray-500 group-hover:text-gray-600">
+                Extract from file <span className="italic">(.pdf or .txt)</span>
               </span>
             </button>
           </div>
