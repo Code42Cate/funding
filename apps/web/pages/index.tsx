@@ -18,7 +18,7 @@ export function Index() {
       <div className="relative -mx-4 flex w-full flex-nowrap gap-x-4 overflow-x-auto px-4 py-5">
         {Array.from({ length: 10 }).map((_, i) => (
           <div
-            className="hover:scale-102 flex h-56 w-80 shrink-0 cursor-pointer flex-col rounded-lg border border-gray-300 p-2 text-sm text-gray-800 shadow-sm transition-all duration-200 ease-in-out hover:border-purple-500 hover:shadow-md"
+            className="hover:scale-102 flex h-56 w-80 shrink-0 cursor-pointer flex-col rounded-lg border border-gray-300 p-3 text-sm text-gray-800 shadow-sm transition-all duration-200 ease-in-out hover:border-purple-500 hover:shadow-md"
             key={i}
           >
             <h3 className="mt-1 font-semibold">Stipendium für Schlaue Menschen</h3>
