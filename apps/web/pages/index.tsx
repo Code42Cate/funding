@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import DescriptionInput from '../components/DescriptionInput';
 import Header from '../components/Header';
 
@@ -12,7 +13,30 @@ export function Index() {
       <div className="flex flex-row overflow-x-auto"></div>
 
       {/* Main Result */}
-      <div></div>
+      <div className="h-96 w-full flex-col rounded-lg border border-gray-300 p-4 text-gray-800 shadow-sm">
+        <div className="flex flex-row gap-x-2">
+          <Image src="/eu.svg" width={100} height={100} alt="eu logo" className="h-16 w-16 rounded-lg object-cover" />
+
+          <div className="flex flex-col justify-center">
+            <h2 className="text-lg font-semibold">Erasmus für Jungunternehmer</h2>
+            <span className="font-medium text-gray-700">Europäische Kommission</span>
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-col text-sm text-gray-700">
+          <ul>
+            <li>
+              <span className="font-semibold">Förderung:</span> 5000€
+            </li>
+            <li>
+              <span className="font-semibold">Bewerbungsfrist:</span> 31.12.2021
+            </li>
+            <li>
+              <span className="font-semibold">Cool?</span> <a href="#">Ja</a>
+            </li>
+          </ul>
+        </div>
+      </div>
 
       {/* 2 -> k results */}
       <div className="relative -mx-4 flex w-full flex-nowrap gap-x-4 overflow-x-auto px-4 py-5">
