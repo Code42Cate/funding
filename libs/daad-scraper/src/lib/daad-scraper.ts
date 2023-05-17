@@ -1,4 +1,3 @@
-import { writeFileSync } from 'fs';
 import { JSDOM } from 'jsdom';
 import { Logger } from '@funding-database/logger';
 

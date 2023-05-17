@@ -1,6 +1,7 @@
 import daad from '@funding-database/daad-scraper';
 import eu from '@funding-database/eu-scraper';
 import db from '@funding-database/db';
+import foerderdatenbank from '@funding-database/foerderdatenbank-scraper';
 
 import minimist from 'minimist';
 import { FundingOpportunity, Prisma } from '@prisma/client';
@@ -56,7 +57,7 @@ const main = async () => {
     skipDuplicates: true,
   });
  */
-
+  /* 
   const daadResults = await daad.scrape();
 
   const rows: Omit<FundingOpportunity, 'id'>[] = daadResults
@@ -82,6 +83,34 @@ const main = async () => {
     });
 
   // DRO
+
+  await db.fundingOpportunity.createMany({
+    data: rows,
+    skipDuplicates: true,
+  }); */
+
+  const foerderdatenbankResults = await foerderdatenbank.scrape();
+
+  const rows: Omit<FundingOpportunity, 'id'>[] = foerderdatenbankResults
+
+    .filter((result) => result.title !== undefined)
+    .map((result) => {
+      return {
+        url: result.url,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        startAt: null,
+        deadlineAt: null,
+        deletedAt: null,
+        description: result.description,
+        descriptionSummary: null,
+        issuer: result.meta['issuer'] ?? 'Unknown issuer',
+        meta: JSON.stringify(result),
+        targetGroup: result.meta['Förderberechtigte'] ?? '',
+        title: result.title,
+        type: 'FOERDERDATENBANK',
+      };
+    });
 
   await db.fundingOpportunity.createMany({
     data: rows,
