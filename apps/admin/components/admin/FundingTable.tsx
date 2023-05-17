@@ -17,23 +17,36 @@ const prettyPrintDate = (date: string | Date) =>
 
 const prettyPrintTitle = (text: string) => text.toLowerCase().replace(/(?<!\S)\S/g, (initial) => initial.toUpperCase());
 
-const isEntryActive = (entry: GetFundingOpportunitiesResponse['fundingOpportunities'][0]) =>
-  entry.deletedAt === null && new Date(entry.deadlineAt) > new Date();
+type Status = 'active' | 'inactive' | 'unknown';
 
-const StatusBadge = ({ status }: { status: 'active' | 'inactive' }) => (
+const getStatus = (entry: GetFundingOpportunitiesResponse['fundingOpportunities'][0]): Status => {
+  if (entry.deletedAt === null && entry.deadlineAt !== null && new Date(entry.deadlineAt) > new Date()) {
+    return 'active';
+  } else if (entry.deletedAt === null && entry.deadlineAt !== null && new Date(entry.deadlineAt) < new Date()) {
+    return 'inactive';
+  } else {
+    return 'unknown';
+  }
+};
+
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const StatusBadge = ({ status }: { status: Status }) => (
   <div
     className={classNames('flex w-min items-center gap-2 rounded-full px-2 py-1 text-center text-sm', {
       'bg-green-100 text-green-800': status === 'active',
       'bg-yellow-100 text-yellow-800': status === 'inactive',
+      'bg-gray-100 text-gray-800': status === 'unknown',
     })}
   >
     <div
       className={classNames('h-2 w-2 rounded-full', {
         'bg-green-500': status === 'active',
         'bg-yellow-500': status === 'inactive',
+        'bg-gray-500': status === 'unknown',
       })}
     />
-    {status === 'active' ? 'Active' : 'Inactive'}
+    {capitalize(status)}
   </div>
 );
 
@@ -89,6 +102,7 @@ export default function FundingTable() {
             All Time
             <XMarkIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" />
           </button>
+          {/*      
           <button
             type="button"
             className="inline-flex h-fit items-center gap-x-1.5 rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
@@ -96,7 +110,7 @@ export default function FundingTable() {
             Active
             <XMarkIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" />
           </button>
-
+          */}
           <button
             type="button"
             className="inline-flex h-fit items-center gap-x-1.5 rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
@@ -240,7 +254,7 @@ export default function FundingTable() {
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         <div className="flex h-full justify-center align-middle">
-                          <StatusBadge status={isEntryActive(entry) ? 'active' : 'inactive'} />
+                          <StatusBadge status={getStatus(entry)} />
                         </div>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
