@@ -14,7 +14,7 @@ services:
       - REDISINSIGHT_HOSTS=redis
 
   postgres:
-    image: postgres
+    image: ankane/pgvector
     ports:
       - 5432:5432
     environment:

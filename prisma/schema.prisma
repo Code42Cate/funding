@@ -1,31 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
 }
 
 model FundingOpportunity {
-  id                 Int       @id @default(autoincrement())
-  url                String
-  title              String
-  targetGroup        String?   @map(name: "target_group")
   description        String
-  descriptionSummary String?   @map(name: "description_summary")
+  url                String
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
   issuer             String
-  type               String
   meta               Json
-  startAt            DateTime? @map(name: "start_at")
-  deadlineAt         DateTime? @map(name: "deadline_at")
-  createdAt          DateTime  @default(now()) @map(name: "created_at")
-  updatedAt          DateTime  @default(now()) @updatedAt @map(name: "updated_at")
-  deletedAt          DateTime? @map(name: "deleted_at")
+  title              String
+  type               String
+  targetGroup        String?   @map("target_group")
+  deletedAt          DateTime? @map("deleted_at")
+  deadlineAt         DateTime? @map("deadline_at")
+  startAt            DateTime? @map("start_at")
+  id                 Int       @id @default(autoincrement())
+  descriptionSummary String?   @map("description_summary")
 
-  @@map(name: "funding_opportunities")
+  hasEmbedding Boolean                @map("has_embedding")
+  embedding    Unsupported("vector")?
+
+  @@map("funding_opportunities")
 }
