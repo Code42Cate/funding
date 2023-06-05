@@ -33,7 +33,7 @@ export function Index() {
 
       {/* Main Result */}
       {results.length > 0 && (
-        <div className="h-auto w-full flex-col overflow-y-auto rounded-lg border border-gray-300 p-4 text-gray-800 shadow-sm">
+        <div className="z-0 h-auto w-full flex-col overflow-y-auto rounded-lg border border-gray-300 bg-white bg-opacity-50 p-4 text-gray-800 shadow-sm">
           <>
             <div className="flex flex-row gap-x-2">
               <Image
@@ -45,11 +45,17 @@ export function Index() {
               />
 
               <div className="flex flex-col justify-center">
-                <h2 className="text-lg font-semibold">
+                <a
+                  className="text-lg font-semibold underline-offset-4 hover:underline"
+                  href={results[0].url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {results[0]?.title.startsWith(results[0]?.issuer)
                     ? results[0]?.title.replace(`${results[0]?.issuer}:`, '')
                     : results[0]?.title}
-                </h2>
+                </a>
+
                 <span className="font-medium text-gray-700">{results[0]?.issuer}</span>
               </div>
 
@@ -111,13 +117,13 @@ export function Index() {
                 )}
                 {/* Förderberechtigte */}
                 {results[0].meta?.['meta']?.['Förderberechtigte'] && (
-                  <span className="rounded-full bg-purple-100 px-2 py-1 text-sm font-semibold text-purple-600">
+                  <span className="truncate rounded-full bg-purple-100 px-2 py-1 text-sm font-semibold text-purple-600">
                     {results[0].meta['meta']?.['Förderberechtigte']}
                   </span>
                 )}
                 {/* Fördergebiet */}
                 {results[0].meta?.['meta']?.['Fördergebiet'] && (
-                  <span className="rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-600">
+                  <span className="truncate rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-600">
                     {results[0].meta['meta']?.['Fördergebiet']}
                   </span>
                 )}

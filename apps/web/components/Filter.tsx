@@ -19,27 +19,49 @@ const filters = [
     id: 'location',
     name: 'Location',
     options: [
-      { value: 'eu', label: 'European Union' },
-      { value: 'germany', label: 'Germany' },
-      { value: 'baden-wuerttemberg', label: 'Baden-Wuerttemberg' },
+      { value: 'bundesweit', label: 'Bundesweit' },
+      { value: 'Mecklenburg-Vorpommern', label: 'Mecklenburg-Vorpommern' },
+      { value: 'Sachsen', label: 'Sachsen' },
+      { value: 'Nordrhein-Westfalen', label: 'Nordrhein-Westfalen' },
+      { value: 'Baden-Württemberg', label: 'Baden-Württemberg' },
+      { value: 'Bayern', label: 'Bayern' },
+      { value: 'Thüringen', label: 'Thüringen' },
+      { value: 'Brandenburg', label: 'Brandenburg' },
+      { value: 'Hamburg', label: 'Hamburg' },
+      { value: 'Niedersachsen', label: 'Niedersachsen' },
+      { value: 'Saarland', label: 'Saarland' },
+      { value: 'Hessen', label: 'Hessen' },
+      { value: 'Sachsen-Anhalt', label: 'Sachsen-Anhalt' },
+      { value: 'Bremen', label: 'Bremen' },
+      { value: 'Schleswig-Holstein', label: 'Schleswig-Holstein' },
+      { value: 'Rheinland-Pfalz', label: 'Rheinland-Pfalz' },
+      { value: 'Berlin', label: 'Berlin' },
     ],
   },
   {
     id: 'funding-type',
     name: 'Funding Type',
     options: [
-      { value: 'training', label: 'Training' },
-      { value: 'grant', label: 'Grant' },
-      { value: 'support', label: 'Support' },
+      { value: 'Zuschuss', label: 'Zuschuss' },
+      { value: 'Darlehen', label: 'Darlehen' },
+      { value: 'Garantie', label: 'Garantie' },
+      { value: 'Beteiligung', label: 'Beteiligung' },
+      { value: 'Bürgschaft', label: 'Bürgschaft' },
     ],
   },
   {
     id: 'target-group',
     name: 'Target Group',
     options: [
-      { value: 's', label: 'S' },
-      { value: 'm', label: 'M' },
-      { value: 'l', label: 'L' },
+      { value: 'Existenzgründer/in', label: 'Existenzgründer/in' },
+      { value: 'Unternehmen', label: 'Unternehmen' },
+      { value: 'Kommune', label: 'Kommune' },
+      { value: 'Privatperson', label: 'Privatperson' },
+      { value: 'Verband/Vereinigung', label: 'Verband/Vereinigung' },
+      { value: 'Öffentliche Einrichtung', label: 'Öffentliche Einrichtung' },
+      { value: 'Hochschule', label: 'Hochschule' },
+      { value: 'Forschungseinrichtung', label: 'Forschungseinrichtung' },
+      { value: 'Bildungseinrichtung', label: 'Bildungseinrichtung' },
     ],
   },
 ];
@@ -211,10 +233,14 @@ export const Filter = ({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <form className="space-y-4">
+                    <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white px-4 py-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <form
+                        className={classNames('grid min-w-fit', {
+                          'w-[410px] grid-cols-2': section.options.length > 8,
+                        })}
+                      >
                         {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex items-center">
+                          <div key={option.value} className="col-span-1 my-1 flex items-center">
                             <input
                               id={`filter-${section.id}-${optionIdx}`}
                               name={`${section.id}[]`}
