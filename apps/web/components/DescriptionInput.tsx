@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { parseTextFromPdf } from '../utils/pdf';
 import { parseTextFromTxt } from '../utils/txt';
 
-export default function DescriptionInput() {
+export default function DescriptionInput({ onSearch }: { onSearch: (description: string) => void }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [description, setDescription] = useState<string>('');
 
@@ -63,7 +63,7 @@ export default function DescriptionInput() {
                 <button
                   onClick={() => inputRef.current?.click()}
                   type="button"
-                  className="group -my-2 -ml-2 inline-flex items-center rounded-full px-3 py-2 text-left text-gray-400"
+                  className="group -my-2 -ml-2 inline-flex items-center rounded-md px-3 py-2 text-left text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
                 >
                   <PaperClipIcon className="-ml-1 mr-2 h-5 w-5 group-hover:text-gray-500" aria-hidden="true" />
                   <span className="text-sm text-gray-500 group-hover:text-gray-600">
@@ -114,7 +114,8 @@ export default function DescriptionInput() {
           </div>
           <div className="flex-shrink-0">
             <button
-              type="submit"
+              onClick={() => onSearch(description)}
+              type="button"
               className="inline-flex items-center rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 hover:text-purple-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
             >
               Find me money
