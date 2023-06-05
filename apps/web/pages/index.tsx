@@ -18,7 +18,7 @@ export function Index() {
   };
 
   return (
-    <main className="mx-auto mt-10 flex max-w-3xl flex-col gap-y-6 py-4">
+    <main className="mx-auto flex max-w-3xl flex-col gap-y-6 px-2 py-4 sm:mt-10">
       <Header />
 
       <DescriptionInput onSearch={onSearch} />
