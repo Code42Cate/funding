@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import { useState } from 'react';
 import { GetFundingOpportunitiesResponse } from './api/search';
 import { StreamingTextURL } from 'nextjs-openai';
+import Filter from '../components/Filter';
 
 export function Index() {
   const [results, setResults] = useState<GetFundingOpportunitiesResponse['hits']>([]);
@@ -22,6 +23,8 @@ export function Index() {
       <Header />
 
       <DescriptionInput onSearch={onSearch} />
+
+      <Filter />
 
       {/* Filter */}
       <div className="flex flex-row overflow-x-auto"></div>
