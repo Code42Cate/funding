@@ -2,7 +2,7 @@ import Image from 'next/image';
 import DescriptionInput from '../components/DescriptionInput';
 import Header from '../components/Header';
 import { useState } from 'react';
-import { GetFundingOpportunitiesResponse } from './api/search';
+import { GetFundingOpportunitiesResponse, SelectedFilters } from './api/search';
 import { StreamingTextURL } from 'nextjs-openai';
 import Filter from '../components/Filter';
 
@@ -10,7 +10,7 @@ export function Index() {
   const [results, setResults] = useState<GetFundingOpportunitiesResponse['hits']>([]);
 
   const onSearch = (v: string) => {
-    fetch(`/api/search?search=${encodeURIComponent(v)}`)
+    fetch(`/api/search?search=${encodeURIComponent(v)}&filters=${encodeURIComponent(JSON.stringify(selectedFilters))}`)
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
@@ -18,13 +18,15 @@ export function Index() {
       });
   };
 
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
+
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-y-6 px-2 py-4 sm:mt-10">
       <Header />
 
       <DescriptionInput onSearch={onSearch} />
 
-      <Filter />
+      <Filter selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
 
       {/* Filter */}
       <div className="flex flex-row overflow-x-auto"></div>

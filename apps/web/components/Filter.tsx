@@ -1,8 +1,9 @@
-import { Fragment, useState } from 'react';
-import { Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react';
+import { Dispatch, Fragment, SetStateAction, useState } from 'react';
+import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
+import { SelectedFilters } from '../pages/api/search';
 
 const filters = [
   {
@@ -43,15 +44,17 @@ const filters = [
   },
 ];
 
-type SelectedFilters = {
-  [key: string]: string[];
-};
-
 const sectionHasFilter = (section: (typeof filters)[0], selectedFilters: SelectedFilters) => {
   return section.options.some((option) => selectedFilters[section.id]?.includes(option.value));
 };
 
-export const Filter = () => {
+export const Filter = ({
+  selectedFilters,
+  setSelectedFilters,
+}: {
+  selectedFilters: SelectedFilters;
+  setSelectedFilters: Dispatch<SetStateAction<SelectedFilters>>;
+}) => {
   const onSelect = (section: (typeof filters)[0], option: (typeof filters)[0]['options'][0]) => {
     setSelectedFilters((prev) => {
       if (prev[section.id] && prev[section.id].some((v) => v === option.value)) {
@@ -69,8 +72,6 @@ export const Filter = () => {
   };
 
   const [open, setOpen] = useState(false);
-
-  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
   return (
     <div>
