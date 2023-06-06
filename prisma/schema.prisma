@@ -25,8 +25,36 @@ model FundingOpportunity {
   id                 Int       @id @default(autoincrement())
   descriptionSummary String?   @map("description_summary")
 
-  hasEmbedding Boolean                @map("has_embedding")
-  embedding    Unsupported("vector")?
+  hasEmbedding        Boolean                @map("has_embedding")
+  embedding           Unsupported("vector")?
+  NotificationHistory NotificationHistory[]
 
   @@map("funding_opportunities")
+}
+
+model Notification {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+
+  email               String
+  query               String
+  NotificationHistory NotificationHistory[]
+
+  @@map("notifications")
+}
+
+// Sent out notifications
+model NotificationHistory {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+
+  notificationId Int          @map("notification_id")
+  notification   Notification @relation(fields: [notificationId], references: [id])
+
+  fundingOpportunityId Int                @map("funding_opportunity_id")
+  fundingOpportunity   FundingOpportunity @relation(fields: [fundingOpportunityId], references: [id])
+
+  @@map("notification_history")
 }
