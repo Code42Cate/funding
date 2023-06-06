@@ -28,6 +28,7 @@ model FundingOpportunity {
   hasEmbedding        Boolean                @map("has_embedding")
   embedding           Unsupported("vector")?
   NotificationHistory NotificationHistory[]
+  Result              Result[]
 
   @@map("funding_opportunities")
 }
@@ -57,4 +58,17 @@ model NotificationHistory {
   fundingOpportunity   FundingOpportunity @relation(fields: [fundingOpportunityId], references: [id])
 
   @@map("notification_history")
+}
+
+model Result {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  fundingOpportunityId Int                @map("funding_opportunity_id")
+  fundingOpportunity   FundingOpportunity @relation(fields: [fundingOpportunityId], references: [id])
+
+  query String
+
+  @@map("results")
 }

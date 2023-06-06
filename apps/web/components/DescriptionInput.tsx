@@ -3,9 +3,15 @@ import { useRef, useState } from 'react';
 import { parseTextFromPdf } from '../utils/pdf';
 import { parseTextFromTxt } from '../utils/txt';
 
-export default function DescriptionInput({ onSearch }: { onSearch: (description: string) => void }) {
+export default function DescriptionInput({
+  onSearch,
+  defaultValue,
+}: {
+  defaultValue: string | null;
+  onSearch: (description: string) => void;
+}) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [description, setDescription] = useState<string>('');
+  const [description, setDescription] = useState<string>(defaultValue ?? '');
 
   const [uploadStatus, setUploadStatus] = useState<'uploading' | 'success' | 'failed' | null>(null);
   const [filename, setFilename] = useState<string | null>(null);

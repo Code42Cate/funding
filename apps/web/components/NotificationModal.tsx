@@ -2,6 +2,7 @@ import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { CheckIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/router';
 
 const validateEmail = (email: string) => {
   const re = /\S+@\S+\.\S+/;
@@ -15,17 +16,45 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
 
   const [email, setEmail] = useState<string>('');
   const [status, setStatus] = useState<Status>(null);
+  const router = useRouter();
 
-  const submit = async (email: string) => {
-    const res = await fetch('/api/subscribe', {
+  const postRequest = async (email: string) => {
+    const res = await fetch('/api/notification', {
       method: 'POST',
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, id: router.query.id }),
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
     return res.ok;
+  };
+
+  const successReset = () => {
+    setStatus('success');
+    setTimeout(() => {
+      setOpen(false);
+      setEmail('');
+      setTimeout(() => {
+        setStatus(null);
+      }, 250);
+    }, 500);
+  };
+
+  const failReset = () => {
+    setStatus('failed');
+    setTimeout(() => {
+      setStatus(null);
+    }, 3000);
+  };
+
+  const onSubmit = async () => {
+    setStatus('loading');
+    if (validateEmail(email)) {
+      (await postRequest(email)) ? successReset() : failReset();
+    } else {
+      setStatus('invalid');
+    }
   };
 
   return (
@@ -105,23 +134,7 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
                               status !== 'loading',
                           }
                         )}
-                        onClick={async () => {
-                          setStatus('loading');
-                          if (validateEmail(email)) {
-                            if (await submit(email)) {
-                              setStatus('success');
-                              setOpen(false);
-                              setStatus(null);
-                            } else {
-                              setStatus('failed');
-                              setTimeout(() => {
-                                setStatus(null);
-                              }, 3000);
-                            }
-                          } else {
-                            setStatus('invalid');
-                          }
-                        }}
+                        onClick={onSubmit}
                         ref={cancelButtonRef}
                       >
                         {status === 'loading' && (
