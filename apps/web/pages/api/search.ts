@@ -1,11 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from '@funding-database/db';
-import { Configuration, OpenAIApi } from 'openai';
 import { Prisma } from '@prisma/client';
-
-export type GetFundingOpportunitiesResponse = {
-  hits: FundingResult[];
-};
+import { SelectedFilters, sanitizeFilters, validateFilters } from '../../filters';
+import { getEmbedding } from '../../openai';
 
 type FundingResult = {
   id: number;
@@ -16,10 +13,6 @@ type FundingResult = {
   descriptionSummary: null | string;
   issuer: string;
   type: 'FOERDERDATENBANK' | 'EU' | 'DAAD';
-};
-
-export type SelectedFilters = {
-  [key: string]: string[];
 };
 
 type FundingResultRaw = {
@@ -33,52 +26,12 @@ type FundingResultRaw = {
   type: 'FOERDERDATENBANK' | 'EU' | 'DAAD';
 };
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const validateFilters = (filters: SelectedFilters) => {
-  if (filters['source'] && filters['source'].length > 0) {
-    if (!['FOERDERDATENBANK', 'EU', 'DAAD'].includes(filters['source'][0])) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-const sanitizeFilters = (filters: SelectedFilters) => {
-  if (!filters['source']) {
-    filters['source'] = ['FOERDERDATENBANK', 'EU', 'DAAD'];
-  }
-
-  return filters;
-};
-
-const openai = new OpenAIApi(configuration);
-
-export default async function funding(req: NextApiRequest, res: NextApiResponse<GetFundingOpportunitiesResponse>) {
-  const x = await db.fundingOpportunity.findMany({
-    select: {
-      meta: true,
-    },
-    where: {
-      type: 'FOERDERDATENBANK',
-    },
-  });
-
-  const gebiete = new Set<string>();
-
-  x.forEach((item) => {
-    // @ts-expect-error ts-migrate(2532) FIXME: Object is possibly 'undefined'.
-    const data = JSON.parse(item.meta ?? '{}');
-    data['meta']?.['Förderberechtigte']?.split(', ').map((gebiet: string) => gebiete.add(gebiet));
-  });
-
-  gebiete.forEach((gebiet) => {
-    console.log(JSON.stringify({ value: gebiet, label: gebiet }) + ',');
-  });
-
+export default async function funding(
+  req: NextApiRequest,
+  res: NextApiResponse<{
+    hits: FundingResult[];
+  }>
+) {
   if (req.method === 'GET') {
     const search = String(req.query.search) || '';
     let filters: SelectedFilters = req.query.filters ? JSON.parse(String(req.query.filters)) : {};
@@ -90,25 +43,51 @@ export default async function funding(req: NextApiRequest, res: NextApiResponse<
 
     filters = sanitizeFilters(filters);
 
-    // create embedding for the search
-    const openaiRes = await openai.createEmbedding({
-      model: 'text-embedding-ada-002',
-      input: search,
-    });
+    console.log(filters);
 
-    const embedding = JSON.stringify(openaiRes.data.data[0].embedding);
+    // create embedding for the search
+    const embedding = await getEmbedding(search);
 
     const sources = filters['source'].map((source) => Prisma.sql`${source}::text`);
+    const sourcesWithoutFoerderdatenbank = filters['source']
+      .filter((source) => source !== 'FOERDERDATENBANK')
+      .map((source) => Prisma.sql`${source}::text`);
 
-    const items: FundingResultRaw[] =
-      await db.$queryRaw`SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text FROM funding_opportunities WHERE funding_opportunities.type IN (${Prisma.join(
-        sources
-      )}) ORDER BY embedding <-> ${embedding}::vector LIMIT 1`;
+    if (sourcesWithoutFoerderdatenbank.length === 0) sourcesWithoutFoerderdatenbank.push(Prisma.sql`'DONT_REMOVE_ME'`);
+
+    let items: FundingResultRaw[] = [];
+
+    if (filters['source'].includes('FOERDERDATENBANK')) {
+      items = await db.$queryRaw`
+SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text
+FROM funding_opportunities
+WHERE (funding_opportunities.type = 'FOERDERDATENBANK'
+  AND EXISTS
+    (SELECT 1
+     FROM unnest(STRING_TO_ARRAY(meta->'meta'->>'Förderart', ',')) AS fa
+     WHERE fa LIKE ANY (ARRAY[${Prisma.join(filters['funding-type'].map((t) => Prisma.sql`${t}`))}]) )
+  AND EXISTS
+    (SELECT 1
+     FROM unnest(STRING_TO_ARRAY(meta->'meta'->>'Fördergebiet', ',')) AS fg
+     WHERE fg LIKE ANY (ARRAY[${Prisma.join(filters['location'].map((t) => Prisma.sql`${t}`))}]) )
+  AND EXISTS
+    (SELECT 1
+     FROM unnest(STRING_TO_ARRAY(target_group, ',')) AS tg
+     WHERE tg LIKE ANY (ARRAY[${Prisma.join(
+       filters['target-group'].map((t) => Prisma.sql`${t}`)
+     )}]) )) OR funding_opportunities.type IN (${Prisma.join(sourcesWithoutFoerderdatenbank)})
+ORDER BY embedding <-> ${embedding}::vector LIMIT 1
+      `;
+    } else {
+      items =
+        await db.$queryRaw`SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text FROM funding_opportunities WHERE funding_opportunities.type IN (${Prisma.join(
+          sources
+        )}) ORDER BY embedding <-> ${embedding}::vector LIMIT 1`;
+    }
 
     const data = items.map((item) => {
       return {
         ...item,
-        meta: JSON.parse(item.meta),
         embedding: undefined,
         descriptionSummary: item.description_summary,
       };

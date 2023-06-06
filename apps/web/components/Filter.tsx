@@ -3,68 +3,7 @@ import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
-import { SelectedFilters } from '../pages/api/search';
-
-const filters = [
-  {
-    id: 'source',
-    name: 'Data Source',
-    options: [
-      { value: 'EU', label: 'EU Funding' },
-      { value: 'DAAD', label: 'DAAD' },
-      { value: 'FOERDERDATENBANK', label: 'Förderdatenbank' },
-    ],
-  },
-  {
-    id: 'location',
-    name: 'Location',
-    options: [
-      { value: 'bundesweit', label: 'Bundesweit' },
-      { value: 'Mecklenburg-Vorpommern', label: 'Mecklenburg-Vorpommern' },
-      { value: 'Sachsen', label: 'Sachsen' },
-      { value: 'Nordrhein-Westfalen', label: 'Nordrhein-Westfalen' },
-      { value: 'Baden-Württemberg', label: 'Baden-Württemberg' },
-      { value: 'Bayern', label: 'Bayern' },
-      { value: 'Thüringen', label: 'Thüringen' },
-      { value: 'Brandenburg', label: 'Brandenburg' },
-      { value: 'Hamburg', label: 'Hamburg' },
-      { value: 'Niedersachsen', label: 'Niedersachsen' },
-      { value: 'Saarland', label: 'Saarland' },
-      { value: 'Hessen', label: 'Hessen' },
-      { value: 'Sachsen-Anhalt', label: 'Sachsen-Anhalt' },
-      { value: 'Bremen', label: 'Bremen' },
-      { value: 'Schleswig-Holstein', label: 'Schleswig-Holstein' },
-      { value: 'Rheinland-Pfalz', label: 'Rheinland-Pfalz' },
-      { value: 'Berlin', label: 'Berlin' },
-    ],
-  },
-  {
-    id: 'funding-type',
-    name: 'Funding Type',
-    options: [
-      { value: 'Zuschuss', label: 'Zuschuss' },
-      { value: 'Darlehen', label: 'Darlehen' },
-      { value: 'Garantie', label: 'Garantie' },
-      { value: 'Beteiligung', label: 'Beteiligung' },
-      { value: 'Bürgschaft', label: 'Bürgschaft' },
-    ],
-  },
-  {
-    id: 'target-group',
-    name: 'Target Group',
-    options: [
-      { value: 'Existenzgründer/in', label: 'Existenzgründer/in' },
-      { value: 'Unternehmen', label: 'Unternehmen' },
-      { value: 'Kommune', label: 'Kommune' },
-      { value: 'Privatperson', label: 'Privatperson' },
-      { value: 'Verband/Vereinigung', label: 'Verband/Vereinigung' },
-      { value: 'Öffentliche Einrichtung', label: 'Öffentliche Einrichtung' },
-      { value: 'Hochschule', label: 'Hochschule' },
-      { value: 'Forschungseinrichtung', label: 'Forschungseinrichtung' },
-      { value: 'Bildungseinrichtung', label: 'Bildungseinrichtung' },
-    ],
-  },
-];
+import { filters, SelectedFilters } from '../filters';
 
 const sectionHasFilter = (section: (typeof filters)[0], selectedFilters: SelectedFilters) => {
   return section.options.some((option) => selectedFilters[section.id]?.includes(option.value));
