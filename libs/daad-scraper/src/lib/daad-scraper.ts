@@ -69,7 +69,7 @@ export const scrape = async () => {
     .map((entry: PromiseFulfilledResult<Scholarship>) => entry.value);
 };
 
-type Scholarship = {
+export type Scholarship = {
   id: number;
   title: string | null;
   fields: { [key: string]: string };

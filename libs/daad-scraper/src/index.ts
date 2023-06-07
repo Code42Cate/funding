@@ -1,4 +1,6 @@
-import { scrape } from './lib/daad-scraper';
+import { scrape, Scholarship } from './lib/daad-scraper';
+
+export { Scholarship };
 
 export default {
   scrape,
