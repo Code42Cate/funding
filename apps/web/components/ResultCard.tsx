@@ -11,7 +11,10 @@ export const ResultCard = ({ match }: { match: FundingResultResponse['match'] })
   const [bookmarkState, setBookmarkState] = useState<'saved' | null>(null);
 
   return (
-    <div className="z-0 h-auto w-full flex-col overflow-y-auto rounded-lg border border-gray-300 bg-white bg-opacity-50 p-4 text-gray-800 shadow-sm">
+    <div
+      className="z-0 h-auto w-full flex-col overflow-y-auto rounded-lg border border-gray-300 bg-white bg-opacity-50 p-4 text-gray-800 shadow-sm"
+      data-testid="result-card"
+    >
       <>
         <div className="flex flex-row gap-x-2">
           <Image src="/eu.svg" width={100} height={100} alt="eu logo" className="h-16 w-16 rounded-lg object-cover" />
@@ -31,6 +34,7 @@ export const ResultCard = ({ match }: { match: FundingResultResponse['match'] })
 
           <div className="ml-auto flex gap-x-4">
             <button
+              data-testid="bookmark-button"
               className="group h-min cursor-pointer text-gray-500 hover:text-gray-700"
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/?id=${router.query.id}`);
@@ -56,6 +60,7 @@ export const ResultCard = ({ match }: { match: FundingResultResponse['match'] })
               href={match.url}
               target="_blank"
               rel="noreferrer"
+              data-testid="external-link"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

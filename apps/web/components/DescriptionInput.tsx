@@ -50,6 +50,7 @@ export default function DescriptionInput({
           Description
         </label>
         <textarea
+          data-testid="description-input"
           rows={8}
           name="description"
           id="description"
@@ -65,10 +66,17 @@ export default function DescriptionInput({
           <div className="flex">
             {uploadStatus === null && (
               <>
-                <input type="file" className="sr-only" ref={inputRef} onChange={handleUpload} />
+                <input
+                  type="file"
+                  className="sr-only"
+                  ref={inputRef}
+                  onChange={handleUpload}
+                  data-testid="upload-input"
+                />
                 <button
                   onClick={() => inputRef.current?.click()}
                   type="button"
+                  data-testid="upload-button"
                   className="group -my-2 -ml-2 inline-flex items-center rounded-md px-3 py-2 text-left text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
                 >
                   <PaperClipIcon className="-ml-1 mr-2 h-5 w-5 group-hover:text-gray-500" aria-hidden="true" />
@@ -120,6 +128,7 @@ export default function DescriptionInput({
           </div>
           <div className="flex-shrink-0">
             <button
+              data-testid="search-button"
               onClick={() => onSearch(description)}
               type="button"
               className="inline-flex items-center rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 hover:text-purple-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"

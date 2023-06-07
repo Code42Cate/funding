@@ -59,7 +59,13 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        initialFocus={cancelButtonRef}
+        onClose={setOpen}
+        data-testid="notification-modal"
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -104,6 +110,7 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
                         type="email"
                         name="email"
                         id="email"
+                        data-testid="notification-email-input"
                         value={email}
                         onChange={(e) => {
                           setEmail(e.target.value);
@@ -126,6 +133,7 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
                       />
                       <button
                         type="button"
+                        data-testid="notification-submit-button"
                         className={classNames(
                           'inline-flex min-w-fit items-center rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm',
                           {
@@ -135,6 +143,7 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
                           }
                         )}
                         onClick={onSubmit}
+                        disabled={status === 'loading' || status === 'invalid'}
                         ref={cancelButtonRef}
                       >
                         {status === 'loading' && (
@@ -166,7 +175,11 @@ export const NotificationModal = ({ open, setOpen }: { open: boolean; setOpen: (
                       </button>
                     </div>
                     {status === 'invalid' && (
-                      <p className="mt-2 text-sm text-red-500" id="email-description">
+                      <p
+                        className="mt-2 text-sm text-red-500"
+                        id="email-description"
+                        data-testid="notification-invalid-warning"
+                      >
                         Please enter a valid email address.
                       </p>
                     )}
