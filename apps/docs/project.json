@@ -5,18 +5,10 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
+      "executor": "nx:run-commands",
       "options": {
-        "root": "apps/docs",
-        "outputPath": "dist/apps/docs"
-      },
-      "configurations": {
-        "development": {
-          "outputPath": "apps/docs"
-        },
-        "production": {}
+        "command": "npx next build",
+        "cwd": "apps/docs"
       }
     },
     "serve": {
