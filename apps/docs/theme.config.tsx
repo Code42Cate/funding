@@ -17,6 +17,8 @@ const config: DocsThemeConfig = {
   footer: {
     text: 'Fun2Ding © 2023',
   },
+  faviconGlyph: '💰',
+  gitTimestamp: true,
 };
 
 export default config;
