@@ -25,7 +25,7 @@ export default function Landing() {
 
   return (
     <div className="antialiased">
-      <header className="fixed z-40 m-3 flex h-16 w-[calc(100vw-25px)] justify-between gap-x-4 rounded-2xl border border-opacity-25 bg-black bg-opacity-25 px-4 text-white shadow-md backdrop-blur-md backdrop-filter">
+      <header className="fixed z-40 m-3 flex h-16 w-[calc(100vw-25px)] justify-between gap-x-4 rounded-2xl border border-gray-200 border-opacity-25 bg-black bg-opacity-25 px-4 text-white shadow-md backdrop-blur-md backdrop-filter">
         <span className="flex h-16 flex-col justify-center gap-y-10 font-mono text-xl font-semibold text-orange-400">
           LOGO
         </span>
