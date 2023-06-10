@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+  
+.backdrop {
+    z-index: -1;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(180deg,#323e36 0,#39443d 8.1%,#4a534d 15.5%,#5f6561 22.5%,#747976 29%,#898c8a 35.3%,#9d9f9d 41.2%,#afb1b0 47.1%,#c0c2c1 52.9%,#cfd1d0 58.8%,#dddedd 64.7%,#e9e9e9 71%,#f2f2f2 77.5%,#f9f9f9 84.5%,#fdfdfd 91.9%,#fff);
+}
+
+.backdrop:after {
+    content: "";
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: url(/noise.jpg);
+    width: 100vw;
+    height: 100vh;
+    opacity: .12;
+    pointer-events: none;
+}
