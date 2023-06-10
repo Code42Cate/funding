@@ -37,7 +37,7 @@ export default function Landing() {
         </div>
       </header>
       <div className="backdrop" />
-      <div className="z-20 mx-auto flex max-w-4xl flex-col items-center justify-center pb-20 pt-56 text-center">
+      <div className="z-20 mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pb-20 pt-56 text-center">
         <h1 className="text-6xl font-semibold text-white">funding ding</h1>
         <h2 className="mt-6 text-2xl text-white">get funding for your useless projects from poor tax payers</h2>
 
@@ -49,7 +49,7 @@ export default function Landing() {
         </div>
         <div className="relative mt-20 h-auto w-full rounded-[20px]">
           <div
-            className="z-10 h-[500px] w-full rounded-[20px] border-[3px] border-white border-opacity-30 bg-orange-500"
+            className="z-10 h-[200px] w-full rounded-[20px] border-[3px] border-white border-opacity-30 bg-orange-500 sm:h-[500px]"
             style={{
               transform: `perspective(${Math.max(75, 75 + scrollPosition)}em) rotateX(18deg)`,
             }}
@@ -58,15 +58,15 @@ export default function Landing() {
           </div>
         </div>
 
-        <div className="mt-40 flex max-h-[600px] w-full max-w-4xl justify-center gap-x-4">
-          <div className="flex h-[400px] w-1/3 cursor-pointer flex-col rounded-md border border-gray-200 bg-white transition-all duration-500 hover:border-gray-300 hover:shadow-2xl">
+        <div className="mt-40 flex max-h-[600px] w-full max-w-4xl flex-col justify-center gap-4 sm:flex-row">
+          <div className="flex h-[400px] cursor-pointer flex-col rounded-md border border-gray-200 bg-white transition-all duration-500 hover:border-gray-300 hover:shadow-2xl sm:w-1/3">
             <span className="px-4 pt-14 text-xl font-semibold">Simple</span>
             <p className="mt-4">Even Nicklers can use it!</p>
             <div className="relative mx-auto h-2/3 w-4/5">
               <Image src="/integrations.svg" fill alt="layers" priority />
             </div>
           </div>
-          <div className="flex h-[400px] w-1/3 flex-col gap-y-4">
+          <div className="flex h-[400px] flex-col gap-y-4 sm:w-1/3">
             <div className="flex h-[200px] cursor-pointer  flex-col rounded-md border border-gray-200 bg-white transition-all duration-500 hover:border-gray-300 hover:shadow-2xl">
               <div className="relative m-auto h-2/3 w-4/5">
                 <Image src="/feature.svg" fill alt="layers" priority />
@@ -79,7 +79,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="flex h-[400px] w-1/3 flex-col gap-y-4">
+          <div className="flex min-h-[400px] flex-col gap-y-4 sm:w-1/3">
             <div className="w-full cursor-pointer rounded-md  border border-gray-200 bg-white px-4 pb-4 pt-6 transition-all duration-500 hover:border-gray-300 hover:shadow-2xl">
               <span className="px-4 pt-14 text-xl font-semibold">SAP-based</span>
               <p className="mt-4">Everyone loves SAP software</p>
@@ -102,7 +102,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <footer className="flex w-full flex-col items-center bg-gray-50 pb-20 pt-10 text-gray-900">
+      <footer className="flex w-full flex-col items-center bg-gray-50 px-4 pb-20 pt-10 text-gray-900">
         <div className="flex w-full max-w-4xl flex-row items-start gap-x-40 pb-8">
           <ul className="flex flex-col">
             <li className="mt-2">
