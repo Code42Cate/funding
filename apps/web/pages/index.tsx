@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import ResultCard from '../components/ResultCard';
 import { GetServerSideProps } from 'next';
 import db from '@funding-database/db';
+import Pagination from '../components/Pagination';
 
 type Props = {
   existingMatch: FundingResultResponse['match'] | null;
@@ -38,6 +39,7 @@ export function Index({ existingMatch, existingSearch }: Props) {
       <Filter selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
 
       {match && <ResultCard match={match} />}
+      <Pagination page={1} pageSize={1} total={1000} />
     </main>
   );
 }
