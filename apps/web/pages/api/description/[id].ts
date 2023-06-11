@@ -3,7 +3,7 @@ import { OpenAI } from 'openai-streams/node';
 import db from '@funding-database/db';
 import { FundingOpportunity } from '@prisma/client';
 import { encode, decode } from 'gpt-tokenizer';
-import { JSDOM } from 'jsdom';
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = Number(req.query.id);
 

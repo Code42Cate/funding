@@ -33,7 +33,7 @@ export function Index({ existingMatch, existingSearch }: Props) {
     const { match, id } = await search(v, selectedFilters, page);
 
     setMatch(match);
-    router.push(`/?id=${id}`, undefined, { shallow: true });
+    router.push(`/?id=${id}&page=1`, undefined, { shallow: true });
   };
 
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
@@ -48,8 +48,14 @@ export function Index({ existingMatch, existingSearch }: Props) {
 
       <Filter selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
 
-      {matchExists && <ResultCard match={existingMatch ?? match} />}
-      {matchExists && <Pagination />}
+      {matchExists && <ResultCard match={match ?? existingMatch} />}
+      {matchExists && (
+        <Pagination
+          onPageChange={() => {
+            setMatch(null);
+          }}
+        />
+      )}
     </main>
   );
 }
