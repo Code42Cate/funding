@@ -39,7 +39,9 @@ export const ResultCard = ({ match }: { match: FundingResultResponse['match'] | 
               data-testid="bookmark-button"
               className="group h-min cursor-pointer text-gray-500 hover:text-gray-700"
               onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/?id=${router.query.id}`);
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/?id=${router.query.id}&page=${router.query.page ?? 1}`
+                );
                 setBookmarkState('saved');
                 setTimeout(() => {
                   setBookmarkState(null);
