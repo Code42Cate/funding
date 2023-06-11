@@ -2,7 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { OpenAI } from 'openai-streams/node';
 import db from '@funding-database/db';
 import { FundingOpportunity } from '@prisma/client';
-
+import { encode, decode } from 'gpt-tokenizer';
+import { JSDOM } from 'jsdom';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = Number(req.query.id);
 
@@ -19,9 +20,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
   }
 
+  let prompt = fundingOpportunity.description + '\n\nSummarize the above description:';
+
+  const tokens = encode(prompt);
+  if (tokens.length > 4096 - 1024) {
+    const text = fundingOpportunity.description.replace(/<[^>]*>/g, '');
+    const newTokens = encode(text);
+    if (newTokens.length > 4096 - 1024) {
+      prompt = decode(tokens.slice(0, 4080 - 1024)) + '\n\nSummarize the above description:';
+    } else {
+      prompt = decode(newTokens) + '\n\nSummarize the above description:';
+    }
+  }
+
+  console.log(prompt);
+
   const stream = await OpenAI('completions', {
     model: 'text-davinci-003',
-    prompt: fundingOpportunity.description + '\n\nSummarize the above description:',
+    prompt,
     max_tokens: 1024,
   });
 
@@ -49,6 +65,7 @@ const getFundingOpportunity = async (id: number, withoutMeta = true): Promise<Fu
     select: {
       createdAt: true,
       updatedAt: true,
+      resultId: true,
       deadlineAt: true,
       deletedAt: true,
       issuer: true,
