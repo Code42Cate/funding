@@ -5,10 +5,12 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { BookmarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 
-export const ResultCard = ({ match }: { match: FundingResultResponse['match'] }) => {
+export const ResultCard = ({ match }: { match: FundingResultResponse['match'] | null }) => {
   const router = useRouter();
 
   const [bookmarkState, setBookmarkState] = useState<'saved' | null>(null);
+
+  if (!match) return null;
 
   return (
     <div
@@ -109,13 +111,13 @@ export const ResultCard = ({ match }: { match: FundingResultResponse['match'] })
           <div className="flex flex-row gap-1 pt-4">
             {match.meta?.['metadata']?.['deadlineDate'] && (
               <span className="rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-600">
-                Deadline: {new Date(match.meta?.['metadata']?.['deadlineDate']).toLocaleDateString()}
+                Deadline: {new Date(match.meta?.['metadata']?.['deadlineDate'][0]).toDateString()}
               </span>
             )}
             {/* Förderberechtigte */}
-            {match.meta?.['metadata']?.['startDate'] && (
+            {match.meta?.['metadata']?.['startDate'] && !Array.isArray(match.meta?.['metadata']?.['startDate']) && (
               <span className="rounded-full bg-purple-100 px-2 py-1 text-sm font-semibold text-purple-600">
-                Startdate: {new Date(match.meta?.['metadata']?.['startDate']).toLocaleDateString()}
+                Startdate: {new Date(match.meta?.['metadata']?.['startDate'][0]).toDateString()}
               </span>
             )}
           </div>
