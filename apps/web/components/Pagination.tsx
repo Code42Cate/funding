@@ -1,10 +1,10 @@
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 
-export const Pagination = ({ page, pageSize, total }: { page: number; pageSize: number; total: number }) => {
+export const Pagination = () => {
   const router = useRouter();
   return (
-    <div className="flex items-center justify-between py-5">
+    <div className="flex items-center justify-between">
       <div className="flex flex-1 justify-between">
         <button
           className="relative inline-flex items-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -20,7 +20,9 @@ export const Pagination = ({ page, pageSize, total }: { page: number; pageSize: 
         </button>
         <button
           onClick={() => {
-            router.push({ query: { ...router.query, page: router.query.page ? Number(router.query.page) + 1 : 2 } });
+            const currentPage = Number(router.query.page) ?? 1;
+            const nextPage = currentPage < 10 ? currentPage + 1 : currentPage;
+            router.push({ query: { ...router.query, page: nextPage } });
           }}
           className="relative ml-3 inline-flex items-center rounded-md  bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >

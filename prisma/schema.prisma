@@ -28,7 +28,7 @@ model FundingOpportunity {
   hasEmbedding        Boolean                @map("has_embedding")
   embedding           Unsupported("vector")?
   NotificationHistory NotificationHistory[]
-  Result              Result[]
+  resultId            String?
 
   @@map("funding_opportunities")
 }
@@ -65,8 +65,7 @@ model Result {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  fundingOpportunityId Int                @map("funding_opportunity_id")
-  fundingOpportunity   FundingOpportunity @relation(fields: [fundingOpportunityId], references: [id])
+  fundingOpportunities Json @default("[]") @map("funding_opportunities")
 
   query String
 

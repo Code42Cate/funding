@@ -1,6 +1,6 @@
 import DescriptionInput from '../components/DescriptionInput';
 import Header from '../components/Header';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FundingResultResponse } from './api/search';
 import Filter from '../components/Filter';
 import { SelectedFilters } from '../filters';
@@ -15,20 +15,30 @@ type Props = {
   existingSearch: string | null;
 };
 
+const search = async (query: string, filters: SelectedFilters, page: number) => {
+  const res = await fetch(
+    `/api/search?search=${encodeURIComponent(query)}&filters=${encodeURIComponent(JSON.stringify(filters))}`
+  );
+  const json = await res.json();
+  return json as FundingResultResponse;
+};
+
 export function Index({ existingMatch, existingSearch }: Props) {
-  const [match, setMatch] = useState<FundingResultResponse['match'] | null>(existingMatch);
+  const [match, setMatch] = useState<FundingResultResponse['match'] | null>(null);
   const router = useRouter();
 
-  const onSearch = (v: string) => {
-    fetch(`/api/search?search=${encodeURIComponent(v)}&filters=${encodeURIComponent(JSON.stringify(selectedFilters))}`)
-      .then((res) => res.json())
-      .then((res: FundingResultResponse) => {
-        setMatch(res.match);
-        router.push(`/?id=${res.id}`, undefined, { shallow: true });
-      });
+  const onSearch = async (v: string) => {
+    const page = Number(router.query.page) || 1;
+
+    const { match, id } = await search(v, selectedFilters, page);
+
+    setMatch(match);
+    router.push(`/?id=${id}`, undefined, { shallow: true });
   };
 
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
+
+  const matchExists = existingMatch !== null || match !== null;
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-y-6 px-2 py-4 sm:mt-10">
@@ -38,8 +48,8 @@ export function Index({ existingMatch, existingSearch }: Props) {
 
       <Filter selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
 
-      {match && <ResultCard match={match} />}
-      <Pagination page={1} pageSize={1} total={1000} />
+      {matchExists && <ResultCard match={existingMatch ?? match} />}
+      {matchExists && <Pagination />}
     </main>
   );
 }
@@ -48,6 +58,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   let existingMatch: FundingResultResponse['match'] | null = null;
   let existingSearch: string | null = null;
 
+  const page = Number(context.query.page) || 1;
+
   if (context.query.id) {
     const result = await db.result.findUnique({
       where: {
@@ -55,8 +67,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       },
     });
     if (result) {
-      const opId = result.fundingOpportunityId;
-      const fundingOpportunity = await db.fundingOpportunity.findUnique({
+      const opId = (result.fundingOpportunities as number[])[page - 1];
+      console.log(opId);
+      const fundingOpportunity = await db.fundingOpportunity.findFirst({
         where: {
           id: opId,
         },

@@ -14,7 +14,7 @@ type FundingResultRaw = {
   type: 'FOERDERDATENBANK' | 'EU' | 'DAAD';
 };
 
-export const findBestMatch = async (search: string, filters: SelectedFilters) => {
+export const findBestMatch = async (search: string, filters: SelectedFilters, take: number) => {
   // create embedding for the search
   const embedding = await getEmbedding(search);
 
@@ -46,23 +46,23 @@ export const findBestMatch = async (search: string, filters: SelectedFilters) =>
       WHERE tg LIKE ANY (ARRAY[${Prisma.join(
         filters['target-group'].map((t) => Prisma.sql`${t}`)
       )}]) )) OR funding_opportunities.type IN (${Prisma.join(sourcesWithoutFoerderdatenbank)})
- ORDER BY embedding <-> ${embedding}::vector LIMIT 1
+ ORDER BY embedding <-> ${embedding}::vector LIMIT 10
        `;
   } else {
     items =
       await db.$queryRaw`SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text FROM funding_opportunities WHERE funding_opportunities.type IN (${Prisma.join(
         sources
-      )}) ORDER BY embedding <-> ${embedding}::vector LIMIT 1`;
+      )}) ORDER BY embedding <-> ${embedding}::vector LIMIT 10`;
   }
 
-  return items[0] as FundingResultRaw | null;
+  return items as FundingResultRaw[];
 };
 
-export const saveSearchResult = async (search: string, matchId: number) => {
+export const saveSearchResults = async (search: string, matchIds: number[]) => {
   const result = await db.result.create({
     data: {
       query: search,
-      fundingOpportunityId: matchId,
+      fundingOpportunities: matchIds,
     },
     select: {
       id: true,

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SelectedFilters, sanitizeFilters, validateFilters } from '../../filters';
-import { findBestMatch, saveSearchResult } from '../../search';
+import { findBestMatch, saveSearchResults } from '../../search';
 
 export type FundingResultResponse = {
   match: {
@@ -23,6 +23,7 @@ export default async function funding(req: NextApiRequest, res: NextApiResponse<
   }
 
   const search = String(req.query.search) || '';
+  const page = Number(req.query.page) || 1;
   const filters: SelectedFilters = req.query.filters ? JSON.parse(String(req.query.filters)) : {};
 
   if (!validateFilters(filters)) {
@@ -30,13 +31,18 @@ export default async function funding(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const match = await findBestMatch(search, sanitizeFilters(filters));
-  if (!match) {
+  const matches = await findBestMatch(search, sanitizeFilters(filters), page);
+  if (!matches || matches.length === 0) {
     res.status(404).end();
     return;
   }
 
-  const id = await saveSearchResult(search, match.id);
+  const id = await saveSearchResults(
+    search,
+    matches.map((m) => m.id)
+  );
+
+  const match = matches[0];
 
   res.status(200).json({
     match: {
