@@ -1,20 +1,10 @@
 version: '3'
 
 services:
-  redis:
-    image: redis
-    ports:
-      - 6379:6379
-
-  redisinsight:
-    image: redislabs/redisinsight:latest
-    ports:
-      - "8001:8001"
-    environment:
-      - REDISINSIGHT_HOSTS=redis
-
-  postgres:
+  postgres:  
     image: ankane/pgvector
+    networks:
+      - default
     ports:
       - 5432:5432
     environment:
@@ -22,6 +12,23 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=funding
     volumes:
-      - pgdata:/var/lib/postgresql/data  
+      - pgdata:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - 4200:4200
+    networks:
+      - default
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    
 volumes:
   pgdata:
+
+networks:
+  default:
+    driver: bridge

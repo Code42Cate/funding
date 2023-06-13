@@ -1,5 +1,5 @@
 // CLIENT ONLY
-import { TextItem, pdfjs } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -18,7 +18,7 @@ export const parseTextFromPdf = async (file: File) =>
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
           const page = await pdf.getPage(pageNumber);
           const textContent = await page.getTextContent();
-          const pageText = textContent.items.map((item) => (item as TextItem).str).join(' ');
+          const pageText = textContent.items.map((item) => (item as any).str).join(' ');
           parsedText += pageText + ' ';
         }
 
