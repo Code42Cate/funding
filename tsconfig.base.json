@@ -19,7 +19,8 @@
       "@funding-database/db": ["libs/db/src/index.ts"],
       "@funding-database/eu-scraper": ["libs/eu-scraper/src/index.ts"],
       "@funding-database/foerderdatenbank-scraper": ["libs/foerderdatenbank-scraper/src/index.ts"],
-      "@funding-database/logger": ["libs/logger/src/index.ts"]
+      "@funding-database/logger": ["libs/logger/src/index.ts"],
+      "@funding-database/notifications": ["libs/notifications/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
