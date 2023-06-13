@@ -10,14 +10,6 @@
       "options": {
         "lintFilePatterns": ["libs/db/**/*.ts"]
       }
-    },
-    "test": {
-      "executor": "@nrwl/vite:test",
-      "outputs": ["coverage/libs/db"],
-      "options": {
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/db"
-      }
     }
   },
   "tags": []
