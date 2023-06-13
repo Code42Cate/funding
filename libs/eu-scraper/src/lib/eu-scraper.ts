@@ -3,6 +3,7 @@ import { fetchTopic } from './topic';
 
 const logger = Logger('eu-scraper');
 
+// Identifier for various statuses and types
 const FORTHCOMING_STATUS = '31094501';
 const OPEN_STATUS = '31094502';
 
@@ -25,8 +26,8 @@ const query = {
 };
 
 export const scrape = async () => {
+  // I do not know why, but this is the exact format that the API expects. Try anything else and it fails
   const form = new FormData();
-
   const queryBlob = new Blob([JSON.stringify(query)], {
     type: 'application/json',
   });
@@ -34,7 +35,7 @@ export const scrape = async () => {
   form.append('query', queryBlob, '');
 
   let pageNumber = 1;
-  const pageSize = 1000;
+  const pageSize = 1000; // the latency of the API varies a lot with the page size, 1000 seems to be the sweet spot for now. The maximum is 10000
   let totalResults = pageSize + 1;
 
   const results: Root['results'] = [];
@@ -62,6 +63,7 @@ export const scrape = async () => {
 
   logger.info('Scraping ' + urlsToScrape.length + ' urls');
 
+  // fetch all topics concurrently
   const topics = await Promise.allSettled(urlsToScrape.map(fetchTopic));
 
   // filter successful results
@@ -83,7 +85,8 @@ function assertFulfilled<T>(item: PromiseSettledResult<T>): item is PromiseFulfi
   return item.status === 'fulfilled';
 }
 
-export interface Root {
+// The following types were auto-generated from the JSON response of the API
+export type Root = {
   apiVersion: string;
   terms: string;
   responseTime: number;
@@ -97,14 +100,14 @@ export interface Root {
   bestBets: unknown[];
   results: Result[];
   warnings: unknown[];
-}
+};
 
-export interface QueryLanguage {
+export type QueryLanguage = {
   language: string;
   probability: number;
-}
+};
 
-export interface Result {
+export type Result = {
   apiVersion: string;
   reference: string;
   url: string;
@@ -122,9 +125,9 @@ export interface Result {
   checksum?: string;
   metadata: Metadata;
   children: any[];
-}
+};
 
-export interface Metadata {
+export type Metadata = {
   beneficiaryAdministration?: string[];
   sortStatus: string[];
   description?: string[];
@@ -166,4 +169,4 @@ export interface Metadata {
   mission?: string[];
   missionGroup?: string[];
   esST_checksum?: string[];
-}
+};

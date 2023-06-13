@@ -15,7 +15,8 @@ export const fetchTopic = async (identifier: string) => {
   return topicDetails;
 };
 
-export interface Root2 {
+// The following types were auto-generated from the JSON response of the API
+export type Root2 = {
   action: string;
   plannedOpeningDate: string;
   deadlineModel: string;
@@ -25,13 +26,13 @@ export interface Root2 {
   minContribution: number;
   maxContribution: number;
   budgetTopicActionMap: unknown;
-}
+};
 
-export interface Root {
+export type Root = {
   TopicDetails: TopicDetails;
-}
+};
 
-export interface TopicDetails {
+export type TopicDetails = {
   type: number;
   ccm2Id: number;
   cftId: number;
@@ -62,44 +63,44 @@ export interface TopicDetails {
   additionalDossiers: any[];
   infoPackDossiers: any[];
   callDetailsJSONItem: any[];
-}
+};
 
-export interface FrameworkProgramme {
+export type FrameworkProgramme = {
   id: number;
   abbreviation: string;
   description: string;
-}
+};
 
-export interface ProgrammeDivision {
+export type ProgrammeDivision = {
   id: number;
   abbreviation: string;
   description: string;
-}
+};
 
-export interface Action {
+export type Action = {
   status: Status;
   types: Type[];
   plannedOpeningDate: string;
   submissionProcedure: SubmissionProcedure;
   deadlineDates: string[];
-}
+};
 
-export interface Status {
+export type Status = {
   id: number;
   abbreviation: string;
   description: string;
-}
+};
 
-export interface Type {
+export type Type = {
   typeOfAction: string;
   typeOfMGA: TypeOfMga[];
-}
+};
 
-export interface TypeOfMga {
+export type TypeOfMga = {
   id: number;
   abbreviation: string;
   description: string;
-}
+};
 
 export interface SubmissionProcedure {
   id: number;
@@ -107,7 +108,7 @@ export interface SubmissionProcedure {
   description: string;
 }
 
-export interface BudgetOverviewJsonitem {
+export type BudgetOverviewJsonitem = {
   budgetTopicActionMap: any;
   budgetYearsColumns: string[];
-}
+};
