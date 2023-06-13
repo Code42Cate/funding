@@ -1,11 +1,3 @@
 # daad-scraper
 
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test daad-scraper` to execute the unit tests via [Jest](https://jestjs.io).
-
-## Running lint
-
-Run `nx lint daad-scraper` to execute the lint via [ESLint](https://eslint.org/).
+This is the scraper for [daad.de](https://www.daad.de/de/studieren-und-forschen-in-deutschland/stipendien-finden/), the German Academic Exchange Service.
