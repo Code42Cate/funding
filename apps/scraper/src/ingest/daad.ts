@@ -1,8 +1,8 @@
-import { Scholarship } from '@funding-database/daad-scraper';
+import daad from '@funding-database/daad-scraper';
 import { FundingOpportunity } from '@prisma/client';
 import db from '@funding-database/db';
 
-export const handleDaadData = async (daadResults: Scholarship[]) => {
+export const handleDaadData = async (daadResults: Awaited<ReturnType<typeof daad.scrape>>) => {
   const rows: Omit<FundingOpportunity, 'id'>[] = daadResults
     .filter((result) => result.title !== undefined)
     .map((result) => {
@@ -26,8 +26,25 @@ export const handleDaadData = async (daadResults: Scholarship[]) => {
       };
     });
 
-  await db.fundingOpportunity.createMany({
+  const insertResult = await db.fundingOpportunity.createMany({
     data: rows,
     skipDuplicates: true,
+  });
+
+  console.log(`Inserted ${insertResult.count} EU funding opportunities`);
+
+  const urls = rows.map((row) => row.url);
+
+  // soft delete all rows that are not in the scraped data
+  await db.fundingOpportunity.updateMany({
+    data: {
+      deletedAt: new Date(),
+    },
+    where: {
+      url: {
+        notIn: urls,
+      },
+      type: 'DAAD',
+    },
   });
 };

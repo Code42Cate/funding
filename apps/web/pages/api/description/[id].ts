@@ -33,8 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  console.log(prompt);
-
   const stream = await OpenAI('completions', {
     model: 'text-davinci-003',
     prompt,
@@ -65,7 +63,6 @@ const getFundingOpportunity = async (id: number, withoutMeta = true): Promise<Fu
     select: {
       createdAt: true,
       updatedAt: true,
-      resultId: true,
       deadlineAt: true,
       deletedAt: true,
       issuer: true,

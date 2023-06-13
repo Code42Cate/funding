@@ -23,7 +23,7 @@ export default async function funding(req: NextApiRequest, res: NextApiResponse<
   }
 
   const search = String(req.query.search) || '';
-  const page = Number(req.query.page) || 1;
+
   const filters: SelectedFilters = req.query.filters ? JSON.parse(String(req.query.filters)) : {};
 
   if (!validateFilters(filters)) {
@@ -31,7 +31,7 @@ export default async function funding(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const matches = await findBestMatch(search, sanitizeFilters(filters), page);
+  const matches = await findBestMatch(search, sanitizeFilters(filters));
   if (!matches || matches.length === 0) {
     res.status(404).end();
     return;

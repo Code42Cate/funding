@@ -1,6 +1,7 @@
 import db from '@funding-database/db';
 import { Configuration, OpenAIApi } from 'openai';
 import { throttleAll } from 'promise-throttle-all';
+import { encode, decode } from 'gpt-tokenizer';
 
 export const createEmbeddings = async () => {
   // get all rows from the database
@@ -18,7 +19,7 @@ export const createEmbeddings = async () => {
 
   let totalTokens = 0;
   // for each row, create embedding for the description
-  const updates = await throttleAll(
+  await throttleAll(
     20,
     rows.map((row) => async () => {
       try {
@@ -26,7 +27,7 @@ export const createEmbeddings = async () => {
 
         const res = await openai.createEmbedding({
           model: 'text-embedding-ada-002',
-          input: description,
+          input: decode(encode(description).slice(0, 4097)),
         });
 
         // parse the response
@@ -40,6 +41,7 @@ export const createEmbeddings = async () => {
         return embedding;
       } catch (error) {
         console.log(error);
+        return null;
       }
     })
   );

@@ -12,11 +12,6 @@ export const fetchTopic = async (identifier: string) => {
 
   const { TopicDetails: topicDetails }: Root = await res.json();
 
-  // console.log(`Title: ${topicDetails.callTitle} (${topicDetails.identifier})`);
-  // console.log(
-  //  `Programme: ${topicDetails.frameworkProgramme.abbreviation} (${topicDetails.frameworkProgramme.description})`
-  // );
-
   return topicDetails;
 };
 

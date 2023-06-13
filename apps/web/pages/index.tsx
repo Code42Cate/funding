@@ -74,7 +74,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     });
     if (result) {
       const opId = (result.fundingOpportunities as number[])[page - 1];
-      console.log(opId);
       const fundingOpportunity = await db.fundingOpportunity.findFirst({
         where: {
           id: opId,

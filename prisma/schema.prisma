@@ -11,7 +11,7 @@ datasource db {
 
 model FundingOpportunity {
   description        String
-  url                String
+  url                String    @unique
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
   issuer             String
@@ -28,7 +28,6 @@ model FundingOpportunity {
   hasEmbedding        Boolean                @map("has_embedding")
   embedding           Unsupported("vector")?
   NotificationHistory NotificationHistory[]
-  resultId            String?
 
   @@map("funding_opportunities")
 }

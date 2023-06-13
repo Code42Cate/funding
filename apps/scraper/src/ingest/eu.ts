@@ -2,9 +2,7 @@ import { FundingOpportunity } from '@prisma/client';
 import eu from '@funding-database/eu-scraper';
 import db from '@funding-database/db';
 
-export const handleEuData = async () => {
-  const euTendersResults = await eu.scrape();
-
+export const handleEuData = async (euTendersResults: Awaited<ReturnType<typeof eu.scrape>>): Promise<void> => {
   const rows: Omit<FundingOpportunity, 'id'>[] = euTendersResults
     .filter((result) => result.topic?.description !== undefined)
     .map((result) => {
@@ -25,13 +23,29 @@ export const handleEuData = async () => {
         startAt: new Date(result.metadata.startDate?.[0]),
         deadlineAt: new Date(result.metadata.deadlineDate?.[0]),
         description: result.topic?.description ?? '',
-
         meta: JSON.stringify(result),
       };
     });
 
-  await db.fundingOpportunity.createMany({
+  const insertResult = await db.fundingOpportunity.createMany({
     data: rows,
     skipDuplicates: true,
+  });
+
+  console.log(`Inserted ${insertResult.count} EU funding opportunities`);
+
+  const urls = rows.map((row) => row.url);
+
+  // soft delete all rows that are not in the scraped data
+  await db.fundingOpportunity.updateMany({
+    data: {
+      deletedAt: new Date(),
+    },
+    where: {
+      url: {
+        notIn: urls,
+      },
+      type: 'EU',
+    },
   });
 };

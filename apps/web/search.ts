@@ -14,7 +14,7 @@ type FundingResultRaw = {
   type: 'FOERDERDATENBANK' | 'EU' | 'DAAD';
 };
 
-export const findBestMatch = async (search: string, filters: SelectedFilters, take: number) => {
+export const findBestMatch = async (search: string, filters: SelectedFilters) => {
   // create embedding for the search
   const embedding = await getEmbedding(search);
 
@@ -31,7 +31,7 @@ export const findBestMatch = async (search: string, filters: SelectedFilters, ta
     items = await db.$queryRaw`
  SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text
  FROM funding_opportunities
- WHERE (funding_opportunities.type = 'FOERDERDATENBANK'
+ WHERE (funding_opportunities.type = 'FOERDERDATENBANK' AND deleted_at IS NULL
    AND EXISTS
      (SELECT 1
       FROM unnest(STRING_TO_ARRAY(meta->'meta'->>'Förderart', ',')) AS fa
@@ -50,7 +50,7 @@ export const findBestMatch = async (search: string, filters: SelectedFilters, ta
        `;
   } else {
     items =
-      await db.$queryRaw`SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text FROM funding_opportunities WHERE funding_opportunities.type IN (${Prisma.join(
+      await db.$queryRaw`SELECT id, title, url, type, meta, issuer, description, description_summary AS description_summary, embedding::text FROM funding_opportunities WHERE deleted_at IS NULL AND funding_opportunities.type IN (${Prisma.join(
         sources
       )}) ORDER BY embedding <-> ${embedding}::vector LIMIT 10`;
   }
