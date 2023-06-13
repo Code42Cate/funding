@@ -47,5 +47,5 @@ export const createEmbeddings = async () => {
   );
 
   console.log('Total tokens:', totalTokens);
-  console.log('Cost:', (totalTokens / 1000) * 0.0004);
+  console.log('Cost:', (totalTokens / 1000) * 0.0001);
 };
