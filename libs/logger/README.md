@@ -1,11 +1,13 @@
-# logger
+# Logger
 
-This library was generated with [Nx](https://nx.dev).
+This library is used to log messages to the console or logfile (depending on the environment). It is based on [winston](https://github.com/winstonjs/winston).
 
-## Running unit tests
+## Usage
 
-Run `nx test logger` to execute the unit tests via [Jest](https://jestjs.io).
+```typescript
+import { Logger } from '@funding-database/logger';
 
-## Running lint
+const logger = Logger('eu-scraper'); // identifier for the logger
 
-Run `nx lint logger` to execute the lint via [ESLint](https://eslint.org/).
+logger.info('Hello world')
+```
