@@ -1,15 +1,20 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
-  binaryTargets   = ["native", "linux-musl"]
+  binaryTargets   = ["native", "linux-musl"] // linux-musl is used for alpine linux docker image
 }
 
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  extensions = [vector]
+  extensions = [vector] // Used to save and compare embeddings
 }
 
+// A funding opportunity is anything that is considered an entry in one of the data sources. It can be a grant, a scholarship, a contest, etc.
+// Since the structure and content of the data sources is different, we need to be able to map them to a common structure.
+// Fields that are not available in a data source are set to null.  (e.g. a scholarship does not have a deadline, so the deadline field is null)
+// Anything else that is available for a data source is stored in the meta field as a JSON object.
+// Since embeddings are generated after inserting a new funding opportunity, the embedding field might be null.
 model FundingOpportunity {
   description        String
   url                String    @unique
@@ -20,7 +25,7 @@ model FundingOpportunity {
   title              String
   type               String
   targetGroup        String?   @map("target_group")
-  deletedAt          DateTime? @map("deleted_at")
+  deletedAt          DateTime? @map("deleted_at") // used for soft deletes
   deadlineAt         DateTime? @map("deadline_at")
   startAt            DateTime? @map("start_at")
   id                 Int       @id @default(autoincrement())
@@ -33,6 +38,8 @@ model FundingOpportunity {
   @@map("funding_opportunities")
 }
 
+// A notification is a query that is run periodically to find new funding opportunities.
+// Notifications can be created by users
 model Notification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -45,7 +52,7 @@ model Notification {
   @@map("notifications")
 }
 
-// Sent out notifications
+// Each notification has a history of the results that were found for that notification, this is used to avoid sending the same notification multiple times.
 model NotificationHistory {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -60,6 +67,8 @@ model NotificationHistory {
   @@map("notification_history")
 }
 
+// Each search request results in 10 results being saved in the database. We save them so that users can share their search results with others.
+// The fundingOpportunities field is a JSON array of the funding opportunities that were found for that search, ordered by relevance (best match first).
 model Result {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
