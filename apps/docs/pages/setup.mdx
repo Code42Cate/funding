@@ -1,0 +1,117 @@
+import { Callout } from 'nextra/components';
+
+# Setting up a Development Environment
+
+The goal of this page is to help you setup a development environment of this project.
+
+To get a better overview over this repository, please read the page detailing the [Architecture](/architecture) first.
+
+<Callout type="warning" emoji="⚠️">
+  This is a setup guide for a development environment. If you want to run the project in production, please read the
+  [Deployment](/deployment) page.
+</Callout>
+
+## Requirements
+
+The requirements vary and depend on what part of the stack you want to run.
+
+- Node 19, NPM 9, and NPX (NPX should be preinstalled with NPM)
+- Docker Version 20, Docker-Compose Version 2.15
+- Optionally: A Jupyter notebook environment for the clustering. Any environment will work!
+
+## Database
+
+All of the scraped data is stored in a PostgreSQL database with a pgvector extension to enable similarity search between embeddings.
+The easiest and recommend way is start your local Postgres instance using the provided docker-compose file.
+This will pull (if necessary) a postgres 13 instance with the pgvector extension preinstalled, create a persistant volume for the data (enabling restarts without losing your precious data), and expose the container port on localhost:5432
+To start the database, use the following command:
+
+```bash
+docker-compose up postgres
+```
+
+This might take some time the first time, but subsequent starts will be much faster.
+
+### Initalizing Schema
+
+This project is using [Prisma](https://www.prisma.io/) to manage the database schema. Prisma is an ORM that allows you to define your database schema in a declarative way. The schema is defined in the `prisma/schema.prisma` file. To apply the schema to the database, run the following command:
+
+```bash
+npx prisma db push
+```
+
+This will create the tables and indexes in the database.
+
+<Callout type="error" emoji="️🚫">
+  Only do this once when creating a database, otherwise it will lead to data loss!
+</Callout>
+
+## Scraper
+
+The scraper is a NodeJS + Typescript standalone application that scrapes and embedds the funding data from many sources. It is designed to be run periodically, e.g. once a day. For the development environment, it is recommended to run it manually. Before you start the scraper, make sure that you followed the steps in the [Database](#database) section.
+
+### Environment Variables
+
+Secrets and other configuration is passed to the scraper via environment variables. The easiest way to set them is to create a `.env` file in the root of the repository. The scraper will automatically load the variables from this file. The following variables are required:
+
+```bash
+# Database connection string
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/funding?schema=public"
+# OpenAI api key used for embeddings and summarizations
+OPENAI_API_KEY=sk-xyz
+# Resend api key used for email notifications
+RESEND_API_KEY=re_abc
+```
+
+If you followed the exact steps in the Database setup, you can use the above `DATABASE_URL` value. Otherwise, you need to adjust the connection string to match your setup.
+Adding an OpenAI API Key is required and the scraper will not create embeddings without it. You can get an API key from the [OpenAI website](https://openai.com/). Using the OpenAI API will incur costs, so make sure to check the pricing before you start the scraper! If you need help projecting the costs, please reach out to us :)
+
+The Resend API Key is used to send email notifications. If you don't want to send emails, you can leave this variable empty. While this will disable sending emails in the notifications, it will not remove the notification functionality from the web interface. If you want to send emails, you can get an API key from the [Resend website](https://resend.com/).
+
+### Running the Scraper
+
+Make sure that your database is running and that you have set the required environment variables. Then, you can start the scraper using the following command:
+
+```bash
+npx nx serve scrape
+```
+
+This will start the scraper and run it once until your press `CTRL+C`. The scraper will first scrape all data sources concurrently and then create embeddings for each entry. Depending on the number of entries, the current network speed, and the OpenAI API speed, this can take a while. You can see the progress in the console output. Be patient, it will finish eventually :)
+
+After the scraper is done, you can check the database to see if the data was inserted correctly. You can also check the `logs` table to see if there were any errors during the scraping process.
+
+Since we are scraping many data sources, we have a lot of unknowns. It is not unlikely that the scraper might fail because of network issues or because a data source changed its format. If you encounter any errors, please open an issue [here](https://github.com/Code42Cate/funding/issues/new) and we will try to fix it as soon as possible.
+
+## Web Interface
+
+The web interface is the actual search interface for the funding database. As outlined in the [Architecture](/architecture) section, it is a NextJS application that is served by a NodeJS server. The web interface is dependent on the database and an existing dataset (meaning that the scraper has to be run successfully at least once).
+
+### Environment Variables
+
+Please make sure that you have followed the steps in the [Scraper Environment Variabes](#environment-variables) section before you continue. The web interface requires the same environment variables!
+
+### Running the Web Interface
+
+Make sure that your database is running and that you have set the required environment variables. Then, you can start the web interface using the following command:
+
+```bash
+npx nx serve web
+```
+
+This will start the web interface and run it until your press `CTRL+C`. The web interface will be available on `localhost:4200`. You can open it in your browser and start searching for funding opportunities! This also enables hot reloading, so you can make changes to the code and see them immediately in the browser. On the first load it might still need to compile the code, so it might take a few seconds until the first page load. Subsequent page loads will be much faster.
+
+## Documentation
+
+If you want to run this documentation website locally, you probably want to contribute to this project, thank you! The documentation website is built on [Nextra](https://nextra.site/), a NextJS & MDX framework site generation framework.
+
+### Environment Variables
+
+The documentation page does not require any environment variables in the default configuration :)
+
+### Running the Documentation
+
+Running the documentation site is very similar to running the web interface, simply execute this command:
+
+```bash
+npx nx serve docs
+```
