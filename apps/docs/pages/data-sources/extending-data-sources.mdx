@@ -1,0 +1,61 @@
+import { Callout } from 'nextra/components';
+
+# Extending Data Sources
+
+The structure of this project is kept deliberately simple to make it possible to extend it with your own data sources. Each data source is a separate library in the `libs` folder. To bootstrap a new data source scraper, run the following command with an appropriate name (replace `your-scraper-name` with the name of your scraper, but please keep the `-scraper` suffix):
+
+```bash
+npx nx g @nrwl/js:lib your-scraper-name --bundler=none
+```
+
+Select the unit test runner of your choice and press enter. There should now be some new files under `libs/your-scraper-name`:
+
+While the structure of the scraper itself is not strictly defined, it is recommended to follow the following structure:
+
+Keep your root index.ts in the library simple and only export the `scrape` function of your scraper. Something like this: (copied from eu-scraper)
+
+```typescript
+import { scrape } from './lib/eu-scraper';
+
+export default {
+  scrape,
+};
+```
+
+The `scrape` function should return a Promise with a list of your scraped data object. The type of this object is up to you, you will need to knead the data into the data model of the database in the actual scraper executable later. If you want to have an example of this, take a look at [foerderdatenbank-scraper.ts](https://github.com/Code42Cate/funding/blob/main/libs/foerderdatenbank-scraper/src/lib/foerderdatenbank-scraper.ts).
+
+After creating and exporting the scrape function you can integrate it in the actual scraper that we will periodically execute.
+
+The entrypoint of the scraper can be found in [main.ts](https://github.com/Code42Cate/funding/blob/main/apps/scraper/src/main.ts).
+
+To integrate your scraper, import it and add it to the Promises array:
+
+```typescript
+Promise.allSettled(
+  onlyEmbed
+    ? []
+    : [
+        yourNewScraper.scrape().then(handleYourNewScraperData), // add this line with your new scraper!
+        daad.scrape().then(handleDaadData),
+        eu.scrape().then(handleEuData),
+        foerderdatenbank.scrape().then(handleFoerderdatenbankData),
+      ]
+)
+  .then(() => {
+    console.log(`Scraping took ${Math.round((new Date().getTime() - start.getTime()) / 1000)} seconds`);
+
+    const startEmbeddings = new Date();
+    createEmbeddings().then(() => {
+      console.log(`Embeddings took ${Math.round((new Date().getTime() - startEmbeddings.getTime()) / 1000)} seconds`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
+
+You will now also need to add a function that will take the output of your scraper and enter it cleanly into the database. In the `apps/scraper/src/ingest` folder, create a new file with the name of your scraper (without the `-scraper` suffix) and add a function that takes the output of your scraper and returns a Promise that resolves when the data has been entered into the database. Something like this for the foerderdatenbank: [foerderdatenbank.ts](https://github.com/Code42Cate/funding/blob/main/apps/scraper/src/ingest/foerderdatenbank.ts). You can choose how you want to handle updates and deletes.
+
+<Callout type="warning" emoji="⚠️">
+  Do not embed the data in this function, this will be done automatically after all scrapers have finished!
+</Callout>
