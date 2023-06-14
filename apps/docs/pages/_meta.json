@@ -14,5 +14,8 @@
   "notifications": "Notifications",
   "architecture": "Architecture",
   "data-sources": "Data Sources",
-  "contributing": "Contributing"
+  "contributing": "Contributing",
+  "setup": "Setup",
+  "interface": "Interface",
+  "cluster": "Cluster"
 }
