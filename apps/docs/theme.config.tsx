@@ -13,12 +13,11 @@ const config: DocsThemeConfig = {
   chat: {
     link: 'https://discord.com',
   },
-  docsRepositoryBase: 'https://github.com/Code42Cate/funding',
+  docsRepositoryBase: 'https://github.com/Code42Cate/funding/edit/main/apps/docs',
   footer: {
     text: 'Fun2Ding © 2023',
   },
   faviconGlyph: '💰',
-  gitTimestamp: true,
 };
 
 export default config;
