@@ -19,7 +19,14 @@ export const ResultCard = ({ match }: { match: FundingResultResponse['match'] | 
     >
       <>
         <div className="flex flex-row gap-x-2">
-          <Image src="/eu.svg" width={100} height={100} alt="eu logo" className="h-16 w-16 rounded-lg object-cover" />
+          <Image
+            src="/eu.svg"
+            width={100}
+            height={100}
+            alt="eu logo"
+            priority
+            className="h-16 w-16 rounded-lg object-cover"
+          />
 
           <div className="flex flex-col justify-center">
             <a
