@@ -1,0 +1,17 @@
+# Notifications
+
+Funding data is dynamic and changes frequently. To solve this problem, we have implemented a notification system that will notify you when a new funding opportunity matches your previous query. To use this feature, you must first enter your query and search for it. You can then submit your subscription in the top-right corner with your email address. You will receive an email when a new funding opportunity matches your query.
+
+## Technical Details
+
+The notification system is run everytime new funding opportunities are added. This is done by repeating the exact search the user has previously done, and comparing the results with the previous results. If there are new results, the user is notified and the new results are added to the previous results. This prevents the user from being notified about the same funding opportunity multiple times.
+
+If for whatever reason the notification system fails, it will retry the next time new funding opportunities are added. It will not retry any subactions, such as sending an email, so if the email service fails, the user will not be notified.
+
+Unsubscribing can be done manually by removing the specific Notification row from the database.
+
+## Notification Services
+
+Notifications are currently sent as emails with the [Resend](https://resend.com) service, which is a modern email service that provides a modern DX, good deliverability, and most importantly, a free tier with up to 3000 emails per month. The usage is implemented in the [notifications library](https://github.com/Code42Cate/funding/blob/main/libs/notifications/src/lib/notifications.ts).
+
+You can of course implement your own notification service by providing a similar function.
