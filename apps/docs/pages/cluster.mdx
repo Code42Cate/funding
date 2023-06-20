@@ -1,0 +1,113 @@
+import { Callout } from 'nextra/components';
+import { Tab, Tabs } from 'nextra-theme-docs';
+import Image from 'next/image';
+
+# Cluster
+
+One of the big challenges in consolidating multiple data sources is finding clusters that succinctly describe multiple grants from different sources. For example, there might be 3 grants in total for saving whales, but each one is from a different source with different labels/categories and a completely different format. How do we know that these 3 grants are actually about the same thing? We mostly bypass this problem by implementing semantic search as explained in the [Search section](/search). Although a text-based search is good, deterministic filters on data can help to narrow down the search space and make the experience of finding funding a lot more successful. For example, if we know that the grant is about saving whales, we can filter out all the grants that are not about saving whales.
+
+Everything that we talk about in this section is still work-in-progress and we are still experimenting with different approaches.
+
+<Callout>
+  You can follow all the steps in the [Jupyter
+  Notebook](https://github.com/Code42Cate/funding/blob/main/clustering.ipynb) as well!
+</Callout>
+
+## Data Preparation
+
+The first step is to prepare the data. To do that, follow the tutorial in the [Setup](/setup) section. Once you have your scraped data in your database, come back here and continue.
+
+Create a new folder in the root directory of this repositiry called `data`. This is where you will put your datasets.
+
+You will run 3 separate queries for each data source. First, run:
+
+```sql copy
+SELECT title, url, embedding FROM funding_opportunities WHERE type = 'FOERDERDATENBANK'
+```
+
+And export the result as CSV file with the name `funding_foerderdatenbank.csv` to the `data` folder.
+
+Make sure to add a header row, escape quotes, and use `,` as the delimiter.
+
+Then do the same for the following queries:
+
+```sql copy
+SELECT title, url, embedding FROM funding_opportunities WHERE type = 'DAAD'
+```
+
+Filename: `funding_daad.csv`
+
+```sql copy
+SELECT title, url, embedding FROM funding_opportunities WHERE type = 'EU'
+```
+
+Filename: `funding_eu.csv`
+
+Each CSV file should have look similar to this:
+
+```csv
+"title","url","embedding"
+"Increased Cybersecurity 2024","https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/horizon-cl3-2024-cs-01-01","[0.010429002,-0.029917268,0.011168119,-0.026933677,-0.0020071422,0.0033717954]"
+"Implementing the European Open Science Cloud","https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/infraeosc-03-2020","[-0.004084645,-0.017044233]"
+"Research and Innovation and other actions to support the implementation of mission A Soil Deal for Europe","https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/horizon-miss-2023-soil-01-06","[-0.009423625,-0.0018956903]"
+```
+
+## Determining the number of clusters
+
+The clustering algorithm we are using needs to know how many clusters to create. To determine this, we use the [Silhouette method](https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set#Silhouette_method). The Silhouette measures how closely a data point is related to all datapoints within its own cluster, compared to all datapoints in the neighbouring clusters. If each data point is very closely related to its own cluster and very distantly related to the neighbouring cluster, then the Silhouette will be close to 1. This can then be interpreted as a good clustering!
+
+Before we can calculate the Silhouette scores for different amounts of clusters, we need to set a upper limit for the number of clusters to try out. This is mostly guess work, but we can use our requirement that each cluster should have at least 3 grants to set an upper bound of $\lfloor \frac{n}{3} \rfloor$ where $n$ is the total number of grants. If we realize that most clusters are too specific, we can always decrease this number later.
+
+Plotting the Silhouette scores for different numbers of clusters gives us the following graph:
+
+<Image src="/silhouette.png" alt="Silhouette Scores" width={300} height={300} />
+
+The x-axis represents the number of clusters, and the y-axis represents the Silhouette score. Using this graph we can see that the Silhouette score is highest for 64 clusters! [^1]
+
+[^1]: This is just an example, the actual number of clusters is different and are highly dependent on your data.
+
+## Clustering
+
+- Explain what clustering is
+- Explain different methods
+- Explain our method
+- Explain why we chose this method
+
+## Finetuning and Optimizing
+
+t-SNE has a few hyperparameters that can be tuned to get better results:
+
+#### Perplexity
+
+#### Learning Rate
+
+#### Number of Iterations
+
+## Visualization
+
+The following shows a 2D visualization of the different datasets. This is mostly for aesthetic purposes, but it can also help to get a better understanding of the data. The visualization is a basic scatter plot done with Matplotlib, where each point represents a grant. The colors are assigned randomly.
+
+<Tabs items={['All', 'Foerderdatenbank', 'EU', 'DAAD']}>
+  <Tab></Tab>
+  <Tab>
+    <Image src="/fd.png" alt="Foerderdatenbank Cluster Visualization" width={1000} height={1000} />
+  </Tab>
+  <Tab>
+    <Image src="/eu.png" alt="Foerderdatenbank Cluster Visualization" width={1000} height={1000} />
+  </Tab>
+  <Tab>
+    <Image src="/daad.png" alt="Foerderdatenbank Cluster Visualization" width={1000} height={1000} />
+  </Tab>
+</Tabs>
+
+## Limitations
+
+- Explain finetuning stuff
+
+## Conclusion
+
+## Next Steps
+
+Everything up until this point was a completely manual process - but the data changes often, and so do the clusters. The next challenge is automating this process so that we can keep the clusters up to date. For that, we especially need to find a way to do proper quality assurance on the results, since the output of both the clustering and summarization models is not always perfect.
+
+---
