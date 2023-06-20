@@ -4,6 +4,4 @@ const withNextra = require('nextra')({
   latex: true,
 })
 
-module.exports = withNextra({
-  distDir: '../../dist/apps/docs/.next',
-})
+module.exports = withNextra()
