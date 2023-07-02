@@ -32,6 +32,16 @@ services:
     ports:
       - 3000:3000
 
+  scraper:
+    build:
+      context: .
+      dockerfile: apps/scraper/Dockerfile
+    networks:
+      - default
+    depends_on:
+      - postgres
+    env_file:
+      - .env
 volumes:
   pgdata:
 
