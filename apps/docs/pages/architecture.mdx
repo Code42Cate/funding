@@ -28,9 +28,11 @@ prisma
 
 ## Database
 
-All data (metadata, embeddings, and events) are stored in a [Postgres 15](https://www.postgresql.org/) database. The database schema is defined in [prisma/schema.prisma](/prisma/schema.prisma). To enable vector similarity search, we use [pgvector](https://github.com/pgvector/pgvector), an open-source Postgres extension for vector similarity search.
+All data (metadata, embeddings, notifications, results) are stored in a [Postgres 15](https://www.postgresql.org/) database. The database schema is defined in [prisma/schema.prisma](https://github.com/Code42Cate/funding/blob/main/prisma/schema.prisma). To enable vector similarity search, we use [pgvector](https://github.com/pgvector/pgvector), an open-source Postgres extension for vector similarity search.
 
-<Image src="/db-schema.png" alt="Hello" width={500} height={500} />
+The following diagram shows the database schema which is extensively documented in [prisma/schema.prisma](https://github.com/Code42Cate/funding/blob/main/prisma/schema.prisma). There are 4 tables in total, one for the actual funding data. This table (`funding_oppportunities`) includes columns for metadata and the embeddings, with some extracted but nullable metadata columns such as `target_group` or `deadline_at`. The `jsonb` column meta contains all the unstructured data from the scraped data source. The `notifications` table stores the registered subscriptions, while `notification_history` stores the sent notifications for each subscription. The `results` are stored in the `results` table to enable caching and sharing of results.
+
+<Image src="/db-schema.png" alt="Database Schema" width={500} height={500} />
 
 ## Web App
 
@@ -41,5 +43,17 @@ The Docs app is a [Next.js](https://nextjs.org/) app that uses [Nextra](https://
 If you want to know how to run the docs app on your own, please refer to the [Setup section](/setup).
 
 ## Scraper
+
+The scraper has a fairly simple architecture. From a high level point of view, it consists of two parts. The first part is the actual scraping of the data, and the second the embedding of the funding data descriptions. These parts are separable, so you can run the scraper without the embedding part, or vice versa. This is done to allow manual quality control of the scraped data, and to allow for a more flexible embedding process. Especially needed because the OpenAI API [likes to crash](https://status.openai.com/) from time to time.
+
+All Scrapers are run in parallel. This can be adapted if your network connection is not stable enough to handle multiple requests at once, but should be fine for most use cases.
+
+After all scrapers have finished, the embeddings are generated. This is done in parallel as well, but with a throttle to not be rate limited by the OpenAI API. After all embeddings have been generated, the results are stored in the database.
+
+The last step is to calculate and print the cost of the embeddings.
+
+**TODO: NOTIFICATIONS**
+
+<Image src="/scraper-flow.svg" alt="Scraper Flow" width={500} height={500} />
 
 If you want to know how to run the scraper on your own, please refer to the [Setup section](/setup).
