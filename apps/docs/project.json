@@ -16,6 +16,14 @@
       "options": {
         "command": "npx next dev",
         "cwd": "apps/docs"
+      },
+      "configurations": {
+        "production": {
+          "command": "npx next start"
+        },
+        "development": {
+          "command": "npx next dev"
+        }
       }
     },
     "export": {
