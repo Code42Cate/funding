@@ -1,1 +1,45 @@
+import Image from 'next/image';
+
 # Architecture
+
+diagram:
+
+## Repository Structure
+
+The repository is a monorepo using [NX](https://nx.dev/) and is structured as follows:
+
+```
+apps
+├─> docs (next.js app, available under https://docs.funding.nplusone.studio)
+├─> scraper (Node.js app for scraping data)
+├─> web (next.js app, available under https://funding.nplusone.studio)
+└─> web-e2e (cypress e2e tests for the web app)
+libs
+├─> daad-scraper (Node.js library for scraping DAAD data, part of scraper app)
+├─> eu-scraper (Node.js library for scraping EU data, part of scraper app)
+├─> foerderdatenbank-scraper (Node.js library for scraping Foerderdatenbank data, part of scraper app)
+├─> db (prisma client library)
+├─> notifications (Node.js library for sending notifications, part of scraper app)
+└─> logger (Node.js library for logging, part of scraper app)
+prisma
+├─> migrations
+└─> schema.prisma (database schema)
+```
+
+## Database
+
+All data (metadata, embeddings, and events) are stored in a [Postgres 15](https://www.postgresql.org/) database. The database schema is defined in [prisma/schema.prisma](/prisma/schema.prisma). To enable vector similarity search, we use [pgvector](https://github.com/pgvector/pgvector), an open-source Postgres extension for vector similarity search.
+
+<Image src="/db-schema.png" alt="Hello" width={500} height={500} />
+
+## Web App
+
+## Docs App
+
+The Docs app is a [Next.js](https://nextjs.org/) app that uses [Nextra](https://nextra.site/), a site generation and documentation framework for Next.js. You are currently reading the docs app, available [here](https://docs.funding.nplusone.studio).
+
+If you want to know how to run the docs app on your own, please refer to the [Setup section](/setup).
+
+## Scraper
+
+If you want to know how to run the scraper on your own, please refer to the [Setup section](/setup).
