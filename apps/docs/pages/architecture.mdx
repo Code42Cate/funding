@@ -36,11 +36,42 @@ The following diagram shows the database schema which is extensively documented 
 
 ## Web App
 
+The Web app is a [Next.js](https://nextjs.org/) app that uses [Tailwind CSS](https://tailwindcss.com/). It is available [here](https://funding.nplusone.studio). It is a simple [search interface](/interface) that allows you to search for funding opportunities, and to subscribe to notifications or share results. Since we are using Next.js, it utilizes server-side rendering and includes API routes.
+
 ## Docs App
 
 The Docs app is a [Next.js](https://nextjs.org/) app that uses [Nextra](https://nextra.site/), a site generation and documentation framework for Next.js. You are currently reading the docs app, available [here](https://docs.funding.nplusone.studio).
 
-If you want to know how to run the docs app on your own, please refer to the [Setup section](/setup).
+Before continuing, please follow the [Setup section](/setup) to get the docs app running on your own machine.
+
+The structure of the docs app is quiete simple. There are two parts:
+
+1. `_meta.json` file in the pages directory defines the routes and the navigation structure. For more information, see the [Nextra Docs](https://nextra.site/docs/guide/organize-files). This is a snippet of the `_meta.json` file:
+
+```json
+{
+  "index": "Introduction",
+  "contact": {
+    "title": "Contact ↗",
+    "type": "page",
+    "href": "mailto:ubvja@student.kit.edu",
+    "newWindow": true
+  },
+  "search": "Search",
+  "notifications": "Notifications",
+  "architecture": "Architecture"
+}
+```
+
+Every key in the JSON object is a route and the value is either the title of the page or a JSON object with additional information.
+
+2. MDX files in the pages directory. These files are the actual content of the docs app. For more information, see the [Nextra Docs](https://nextra.site/docs/guide/markdown). MDX is basically markddown, but you can also include some React components. This is a snippet of the `index.mdx` file:
+
+```markdown
+# About
+
+This is the about page! **Markdown** [works](https://docs.funding.nplusone.studio/architecture) great!
+```
 
 ## Scraper
 
