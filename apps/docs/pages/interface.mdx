@@ -1,17 +1,50 @@
-import { Callout } from 'nextra/components';
+import Image from 'next/image';
 
-# Introduction
+
+# Interface
+
+The interface can be accessed [here](https://funding.nplusone.studio).
  
-Welcome to Nextra! This is a basic docs template. You can use it as a starting point for your own project :)
+## Search for results
 
-## What is Nextra?
+### Search box
 
-A **simple**, **powerful** and **flexible** site generation framework with everything you love from Next.js.
+When first opening the interface, users will first notice a large full-text search box. A search can either be provided by typing into this box or by extracting text from a file. 
+This can be performed by selecting a .pdf or .txt file via the respective button. 
 
-## Documentation
+### Enabling notifications
 
-The documentation is available at [https://nextra.site](https://nextra.site).
+As the results for a specific query might change over time, users can enable notifications to stay updated. This can be performed by clicking on the bell icon in the top right corner. 
 
-<Callout type="warning" emoji="⚠️">
-  Do not embed the data in this function, this will be done automatically after all scrapers have finished!
-</Callout>
+Figure 1
+<Image src="/search-interface2.png" alt="Search Interface" width={1000} height={500} />
+
+### Filters
+
+To further improve the search results, filters are provided. First, the users can filter among the three currently existing data sources (Figure 2).
+Moreover, the Location filter provides users with the option to select their state in Germany (Figure 3).
+Furthermore, the desired funding type can be selected (Figure 4).
+Finally, by choosing the proper target group users can ensure to receive matching results (Figure 5). 
+
+
+Figure 2
+<Image src="/filter-source.png" alt="Filter Data Source" width={800} height={500} />
+
+Figure 3
+<Image src="/filter-location.png" alt="Fitler Location" width={800} height={500} />
+
+Figure 4
+<Image src="/filter-type.png" alt="Filter Funding Type" width={800} height={500} />
+
+Figure 5
+<Image src="/filter-group.png" alt="Filter Target Group" width={800} height={500} />
+
+
+## Reading Results
+
+After clicking on the 'Find me money' button, users are first presented with the best matching result. To ensure fast loading times, the automatically generated description is loaded piece by piece.
+Via the 'Next result' and 'Previous result' buttons, users can read through the 10 results that matched the query best.
+Users can then either bookmark the result or enter the page of the program in the data source by clicking on the respective icons.
+
+Figure 6
+<Image src="/search-result2.png" alt="Search Result" width={1000} height={500} />
