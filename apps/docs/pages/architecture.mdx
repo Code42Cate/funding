@@ -38,6 +38,14 @@ The following diagram shows the database schema which is extensively documented 
 
 The Web app is a [Next.js](https://nextjs.org/) app that uses [Tailwind CSS](https://tailwindcss.com/). It is available [here](https://funding.nplusone.studio). It is a simple [search interface](/interface) that allows you to search for funding opportunities, and to subscribe to notifications or share results. Since we are using Next.js, it utilizes server-side rendering and includes API routes.
 
+Although we are using Next.js version 13, this project is still using the [Pages Router](https://nextjs.org/docs/pages) due to stability reasons.
+
+### Tests
+
+The Web app has a few [Happy Path](https://en.wikipedia.org/wiki/Happy_path) [End-to-End](https://circleci.com/blog/what-is-end-to-end-testing/#:~:text=End%2Dto%2Dend%20testing%2C,simulates%20a%20real%2Dworld%20scenario.) tests using [Cypress](https://www.cypress.io/). These tests are run on every commit and pull request using [CircleCI](https://circleci.com/). You can find the tests in the [web-e2e](https://github.com/Code42Cate/funding/tree/main/apps/web-e2e) directory. The actual test file can be found here: [e2e.ts](https://github.com/Code42Cate/funding/blob/main/apps/web-e2e/src/e2e/app.cy.ts).
+
+For detailed instructions on how to run the tests, please refer to the [Setup section](/setup).
+
 ## Docs App
 
 The Docs app is a [Next.js](https://nextjs.org/) app that uses [Nextra](https://nextra.site/), a site generation and documentation framework for Next.js. You are currently reading the docs app, available [here](https://docs.funding.nplusone.studio).
