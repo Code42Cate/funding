@@ -1,6 +1,6 @@
 import DescriptionInput from '../components/DescriptionInput';
 import Header from '../components/Header';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FundingResultResponse } from './api/search';
 import Filter from '../components/Filter';
 import { SelectedFilters } from '../filters';
