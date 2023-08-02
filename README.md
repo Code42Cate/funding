@@ -1,10 +1,36 @@
-# Funding Database
+<h1 align="center">
+  <a href="https://github.com/code42cate/funding">
+    Fun<sub>2</sub>ding
+  </a>
+</h1>
 
+<div align="center">
+  A natural language interface for consolidated funding opportunities.
+  <br />
+  <br />
+  <a href="https://github.com/code42cate/funding/issues/new?assignees=&labels=bug&template=01_BUG_REPORT.md&title=bug%3A+">Report a Bug</a>
+  ·
+  <a href="https://github.com/code42cate/funding/issues/new?assignees=&labels=enhancement&template=02_FEATURE_REQUEST.md&title=feat%3A+">Request a Feature</a>
+  .
+  <a href="https://github.com/code42cate/funding/discussions">Ask a Question</a>
+</div>
 
+<div align="center">
+<br />
 
-## Development Redis Setup
+[![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/code42cate/funding/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
-To setup redis, run `docker-compose up` in the root directory of this repository. Then open your browser and navigate to http://localhost:8081 . This will open the Redis Insight dashboard where you will be able to view and debug your Redis database.
+</div>
 
-Enter the following configuration:
-![Host: redis, Port: 6379, Name: scraper-queue](./docs/screenshots/redis-setup.png)
+## Setup
+
+Please read the [setup guide](https://docs.funding.nplusone.studio/setup) for detailed instructions on how to setup the project.
+
+## Contributing
+
+Contributions are welcome! Please refer to our [Contributing guidelines](https://docs.funding.nplusone.studio) for details!
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
