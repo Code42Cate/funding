@@ -2,14 +2,14 @@ import { Resend } from 'resend';
 
 const resend = new Resend();
 
-export const sendNotificationEmail = (email: string, query: string, link: string, tile: string) => {
+export const sendNotificationEmail = (email: string, query: string, link: string, title: string) => {
   const TEXT_TEMPLATE = `Hey there!
 
 We found a new funding opportunities matching your query!
 
 Query: ${query}
   
-New funding match: ${tile}
+New funding match: ${title}
 
 You can view the full details here: ${link}
 
