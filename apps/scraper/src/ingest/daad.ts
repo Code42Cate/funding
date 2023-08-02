@@ -19,7 +19,7 @@ export const handleDaadData = async (daadResults: Awaited<ReturnType<typeof daad
           .join('\n'),
         descriptionSummary: null,
         issuer: result.title.includes(':') ? result.title.split(':')[0] : 'Unknown issuer',
-        meta: JSON.stringify(result),
+        meta: result,
         targetGroup: '',
         title: result.title,
         type: 'DAAD',

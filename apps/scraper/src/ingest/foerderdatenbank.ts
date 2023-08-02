@@ -20,7 +20,7 @@ export const handleFoerderdatenbankData = async (
         description: result.description,
         descriptionSummary: null,
         issuer: result.meta['issuer'] ?? 'Unknown issuer',
-        meta: JSON.stringify(result),
+        meta: result,
         targetGroup: result.meta['Förderberechtigte'] ?? '',
         title: result.title,
         type: 'FOERDERDATENBANK',

@@ -3,6 +3,7 @@ import eu from '@funding-database/eu-scraper';
 import db from '@funding-database/db';
 
 export const handleEuData = async (euTendersResults: Awaited<ReturnType<typeof eu.scrape>>): Promise<void> => {
+  // @ts-expect-error TODO: fix this
   const rows: Omit<FundingOpportunity, 'id'>[] = euTendersResults
     .filter((result) => result.topic?.description !== undefined)
     .map((result) => {
@@ -23,7 +24,7 @@ export const handleEuData = async (euTendersResults: Awaited<ReturnType<typeof e
         startAt: new Date(result.metadata.startDate?.[0]),
         deadlineAt: new Date(result.metadata.deadlineDate?.[0]),
         description: result.topic?.description ?? '',
-        meta: JSON.stringify(result),
+        meta: result,
       };
     });
 
