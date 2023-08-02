@@ -1,0 +1,13 @@
+# Limitations
+
+Like any software project with a deadline and high ambitions, this project has some limitations that can and should be addressed in the future.
+
+As described extensively in the [Clustering chapter](/cluster), creating filters across multiple datasources turned out to be a complicated problem. Creating filters that are applicable to funding programs from different datasources requires us to automatically detect the commonalities between them, naming them, and then applying them. In this process you also need to find a tradeoff between filter granularity and user experience, as the more filters you have, the more complicated it gets for the user to find the right one, but the more precise the results will be. While this might be possible to do manual with a small set of funding programs, it is not feasible to do this for over 2500 funding programs that are updated daily.
+
+All funding programs are currently scraped from three datasources ([EU Funding & Tenders](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-search), [DAAD](https://www.daad.de/de/studieren-und-forschen-in-deutschland/stipendien-finden/), and [Foerderdatenbank](https://www.foerderdatenbank.de/FDB/DE/Home/home.html)). These provide over 2000 funding programs combined and are the most relevant for researches based in Germany. However, there are many more datasources that could be added (e.g.). While adding more datasources might seem like a good idea, it is important to keep in mind that each datasource adds more complexity to the filters, the maintenance of the scraper, the quality assurance of the data, and the uniqueness of funding programs. Therefore, it is important to find a good balance between the number of datasources and the quality of the data.
+
+Another limitation is that funding programs are sometimes only available in German. This is mainly when searching entering an english search, as the distance between texts of different languages is much higher than between texts of the same language. To solve this, one could use a translation API to translate the search query or the funding program description. In both cases, language-specific context could be lost. While translating the user query would keep costs down[^1], it would increase the total End-to-End latency of the search. Translating the funding programs description would be faster but require a translation during scraping, which would increase the complexity of the scraper and the worst-case cost (assuming that a search program is never returned as a result).
+
+---
+
+[^1]: Assuming that there are less queries than funding programs, which is a reasonable assumption in the current state of the project.

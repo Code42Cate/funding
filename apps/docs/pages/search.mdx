@@ -26,6 +26,8 @@ SELECT * FROM funding_opportunities ORDER BY embedding <-> ${your_embedding}::ve
 
 The previous step returns the top 10 results, and we show each result on a separate page. But just displaying the entire description as previously scraped is often not very helpful. Since these are legal documents, they are usually written in a very [formal and verbose language](http://web.archive.org/web/20230619071641/https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/edf-2023-ls-ra-dis-nt;callCode=null;freeTextSearchKeyword=;matchWholeText=true;typeCodes=0,1,2,8;statusCodes=31094501,31094502,31094503;programmePeriod=null;programCcm2Id=44181033;programDivisionCode=null;focusAreaCode=null;destinationGroup=null;missionGroup=null;geographicalZonesCode=null;programmeDivisionProspect=null;startDateLte=null;startDateGte=null;crossCuttingPriorityCode=null;cpvCode=null;performanceOfDelivery=null;sortQuery=sortStatus;orderBy=asc;onlyTenders=false;topicListKey=topicSearchTablePageState). To solve this and make the results more readable (and skimmable), we use the [OpenAI text-davinci-003 model](https://platform.openai.com/docs/models/gpt-3-5). This model takes a long text and returns a short summary of it[^1]. We then show this summary to the user. In order to show _something_ immediately, we stream the result. This means that as the next word of the summary is available it gets shown and we do not wait for the entire summarization before showing it. To better understand how this works, read the [Interface](/interface) page.
 
-[^1]: It can do a lot more, but this is what we instructed it to do with our prompt.
-
 </Steps>
+
+---
+
+[^1]: It can do a lot more, but this is what we instructed it to do with our prompt.
