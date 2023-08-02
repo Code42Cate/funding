@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between">
       <NotificationModal open={showNotificationModal} setOpen={setShowNotificationModal} />
-      <h1 className="text-3xl font-bold text-gray-800">Project Funding 💰</h1>
+      <h1 className="text-3xl font-bold text-gray-800">Find Funding</h1>
 
       <button
         data-testid="notification-button"

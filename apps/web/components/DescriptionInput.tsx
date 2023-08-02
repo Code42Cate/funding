@@ -133,7 +133,7 @@ export default function DescriptionInput({
               type="button"
               className="inline-flex items-center rounded-md bg-purple-100 px-3 py-2 text-sm font-semibold text-purple-600 shadow-sm hover:bg-purple-200 hover:text-purple-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
             >
-              Find me money
+              Search
             </button>
           </div>
         </div>
