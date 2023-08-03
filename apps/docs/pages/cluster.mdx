@@ -72,7 +72,7 @@ We use a combination of [k-means](https://en.wikipedia.org/wiki/K-means_clusteri
 
 K-means is a popular unsupervised machine learning algorithm used for clustering data. Given a dataset, k-means aims to partition the data into k clusters, where each data point belongs to the cluster with the nearest mean. The algorithm iteratively updates the cluster centroids and reassigns data points to clusters until convergence, aiming to minimize the sum of squared distances between data points and their respective cluster centroids. We figured out k with the Silhouette method in the previous step. [Sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html) provides the implemenation of our algorithm.
 
-t-SNE, a dimensionality reduction technique, is valuable for visualizing and exploring high-dimensional data, including long texts. By preserving local structure and capturing non-linear relationships, it suits the complexity of text data. When clustering long texts, t-SNE is often combined with k-mean.
+[t-SNE](https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding), a dimensionality reduction technique, is valuable for visualizing and exploring high-dimensional data, including long texts. By preserving local structure and capturing non-linear relationships, it suits the complexity of text data. When clustering long texts, [t-SNE](https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding) is often combined with k-mean.
 
 ```python
 kmeans = KMeans(n_clusters=n_clusters, init="k-means++", random_state=42)
@@ -118,7 +118,7 @@ The following shows a 2D visualization of the different datasets. This is mostly
 
 ## Conclusion
 
-- Not rly applicable
+Although the clusters are not perfect, they provide a good starting point for further exploration. One issue that we identified is that the number of clusters that is needed to be sufficiently specific is too high to be displayed in a web interface. We are currently experimenting with different ways to solve this problem, both on the clustering and UX side.
 
 ## Next Steps
 
