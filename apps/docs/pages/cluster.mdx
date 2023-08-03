@@ -64,33 +64,47 @@ Plotting the Silhouette scores for different numbers of clusters gives us the fo
 
 The x-axis represents the number of clusters, and the y-axis represents the Silhouette score. Using this graph we can see that the Silhouette score is highest for 64 clusters! [^1]
 
-TODO: Problematic because we can't really display 64 clusters in the UI.
-
 [^1]: This is just an example, the actual number of clusters is different and are highly dependent on your data.
 
 ## Clustering
 
-- Explain what clustering is
-- Explain different methods
-- Explain our method
-- Explain why we chose this method
+We use a combination of [k-means](https://en.wikipedia.org/wiki/K-means_clustering) to cluster the data and [t-SNE](https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding) to visualize the clusters. The following is a brief explanation of how these algorithms work, skip this if you are already familiar with them.
 
-## Finetuning and Optimizing
+K-means is a popular unsupervised machine learning algorithm used for clustering data. Given a dataset, k-means aims to partition the data into k clusters, where each data point belongs to the cluster with the nearest mean. The algorithm iteratively updates the cluster centroids and reassigns data points to clusters until convergence, aiming to minimize the sum of squared distances between data points and their respective cluster centroids. We figured out k with the Silhouette method in the previous step. [Sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html) provides the implemenation of our algorithm.
 
-t-SNE has a few hyperparameters that can be tuned to get better results:
+t-SNE, a dimensionality reduction technique, is valuable for visualizing and exploring high-dimensional data, including long texts. By preserving local structure and capturing non-linear relationships, it suits the complexity of text data. When clustering long texts, t-SNE is often combined with k-mean.
 
-#### Perplexity
+```python
+kmeans = KMeans(n_clusters=n_clusters, init="k-means++", random_state=42)
+kmeans.fit(matrix)
+labels = kmeans.labels_
+embedding_df["Cluster"] = labels
 
-#### Learning Rate
+tsne = TSNE(
+    n_components=2, perplexity=15, random_state=42, init="random", learning_rate=200
+)
+vis_dims2 = tsne.fit_transform(matrix)
 
-#### Number of Iterations
+x = [x for x, y in vis_dims2]
+y = [y for x, y in vis_dims2]
+
+for category, color in enumerate(mcolors.CSS4_COLORS):
+    xs = np.array(x)[embedding_df.Cluster == category]
+    ys = np.array(y)[embedding_df.Cluster == category]
+    plt.rcParams["figure.figsize"] = (50, 50)
+
+    plt.scatter(xs, ys, color=color, alpha=0.3)
+    plt.scatter(xs.mean(), ys.mean(), marker="x", color=color, s=100, edgecolors="black")
+
+```
+
+While the resulting visualization is nice to look at, they do not provide any information about _why_ they are clustered together. To solve this problem, we iterate through the clusters and let a gpt-3 model summarize the similarities between the grants in each cluster.
 
 ## Visualization
 
 The following shows a 2D visualization of the different datasets. This is mostly for aesthetic purposes, but it can also help to get a better understanding of the data. The visualization is a basic scatter plot done with Matplotlib, where each point represents a grant. The colors are assigned randomly.
 
-<Tabs items={['All', 'Foerderdatenbank', 'EU', 'DAAD']}>
-  <Tab></Tab>
+<Tabs items={['Foerderdatenbank', 'EU', 'DAAD']}>
   <Tab>
     <Image src="/fd.png" alt="Foerderdatenbank Cluster Visualization" width={1000} height={1000} />
   </Tab>
@@ -102,11 +116,9 @@ The following shows a 2D visualization of the different datasets. This is mostly
   </Tab>
 </Tabs>
 
-## Limitations
-
-- Explain finetuning stuff
-
 ## Conclusion
+
+- Not rly applicable
 
 ## Next Steps
 
